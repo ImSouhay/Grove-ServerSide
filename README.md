@@ -11,11 +11,11 @@ LavenderMC-ServerSide
 - `pokedex/config.json`:
 
  * `implementedOnly`:
-  
   + can be either true or false, true meaning that the pokedex will only have implemented pokemons, and false is the opposite.
     
  * `rewards`:
   + this stores all of the rewards that will show up in the pokedex `/reward` menu and it has some stuff in it:
+    
  * `progress`: the % of pokemons caught players should reach to claim this reward.
      
  * `slotNumber`: the slot where the reward will be at in the `/reward` menu, starting with 0 at the top left, to 8 at the top right, then 45 at the button left,and finally 53 at the button right
