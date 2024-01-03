@@ -2,31 +2,25 @@ LavenderMC-ServerSide
 =====================
 ### A server-side Forge Mod made for Lavnder-MC, adds a **PokeDex** and a **PokeBuilder**.
 
-# Config:
-  ```
-  Most of the Config files (config.json/lang.json) exist in: yourServerDirectory/config/lavenderserverside/pokedex or pokebuilder/
-  ```
+## Config:
 
+Most configuration files (`config.json` and `lang.json`) are located in: `yourServerDirectory/config/lavenderserverside/pokedex` or `pokebuilder/`.
 
-- `pokedex/config.json`:
+### `pokedex/config.json`:
 
- * `implementedOnly`:
-  + can be either true or false, true meaning that the pokedex will only have implemented pokemons, and false is the opposite.
-    
- * `rewards`:
-  + this stores all of the rewards that will show up in the pokedex `/reward` menu and it has some stuff in it:
-    
- * `progress`: the % of pokemons caught players should reach to claim this reward.
-     
- * `slotNumber`: the slot where the reward will be at in the `/reward` menu, starting with 0 at the top left, to 8 at the top right, then 45 at the button left,and finally 53 at the button right
-     
- * `itemMaterial`: the ID of the item that will show up in the `/reward` menu, for example: `minecraft:diamond_sword`.
-     
- * `commands`: the commands that will get executed when the player claims the reward, the command should be without the `/` at the beginning and `@player` will get replaced by the name of the player who is claiming the reward
+- `implementedOnly`:
+  - Set to either true or false. If true, the PokeDex will only include implemented Pokémon; false includes all.
 
+- `rewards`:
+  - Contains rewards displayed in the PokeDex `/reward` menu with the following attributes:
+    - `progress`: Percentage of Pokémon caught players should reach to claim the reward.
+    - `slotNumber`: Slot in the `/reward` menu, ranging from 0 at the top left to 8 at the top right, then 45 at the bottom left, and finally 53 at the bottom right.
+    - `itemMaterial`: ID of the item shown in the `/reward` menu (e.g., `minecraft:diamond_sword`).
+    - `commands`: Commands executed when the player claims the reward. Use `@player` to represent the player's name.
 
-### Example:
-```markdown
+#### Example:
+
+```json
 {
   "implementedOnly": true,
   "rewards": [
@@ -34,15 +28,15 @@ LavenderMC-ServerSide
       "progress": 10.0,
       "slotNumber": 10,
       "itemMaterial": "cobblemon:poke_ball",
-      "commands": ["give @player minecraft:diamond 5",
-		                 "give @player minecraft:diamond_sword"]
+      "commands": ["give @player minecraft:diamond 5", "give @player minecraft:diamond_sword"]
     },
     {
       "progress": 5.0,
       "slotNumber": 10,
       "itemMaterial": "minecraft:diamond",
       "commands": ["gamemode creative @player"]
-    }]
+    }
+  ]
 }
 ```
 
