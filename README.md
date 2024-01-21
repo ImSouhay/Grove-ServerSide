@@ -91,7 +91,7 @@ Most configuration files (`config.json` and `lang.json`) are located in: `yourSe
 
 - `/pokedex` or `/dex`:
 
-  * Opens the PokeDex menu and shows all existing pokemons. (configurable, see )
+  * Opens the PokeDex menu and shows all existing pokemons. (configurable from [here](#pokedexconfigjson) and [here](#pokedexlangjson))
   
 
 - `/needed`:
@@ -102,12 +102,12 @@ Most configuration files (`config.json` and `lang.json`) are located in: `yourSe
   * Opens the PokeDex menu but only shows pokemons you catched.
 
 - `/reward`:
-  * Opens a menu where you can claim rewards based on the % of pokemons catched (configurable, see )
+  * Opens a menu where you can claim rewards based on the % of pokemons catched. (configurable from [here](#pokedexconfigjson), [example](#example))
 
 ## **PokeTrainer Commands:**
 
 - `/poketrainer`:
-  * Opens the PokeTrainer's main menu.
+  * Opens the PokeTrainer's main menu (configurable from [here](#poketrainerconfigjson) and [here](#poketrainerlangjson)).
  
 - `/PokeTokensBalance <PlayerName>`:
   * Returns the balance of the player.
