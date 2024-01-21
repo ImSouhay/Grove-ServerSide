@@ -16,9 +16,9 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
+import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.account.AccountProvider;
-import org.imsouhay.pokedex.util.Utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -78,7 +78,7 @@ public class DexMenu {
 				.build();
 
 		Button filler = GooeyButton.builder()
-				.display(Utils.parseItemId(LavenderMcServerSide.lang.getFillerMaterial()))
+				.display(Utils.parseItemId(PokeDex.lang.getFillerMaterial()))
 				.hideFlags(FlagType.All)
 				.lore(new ArrayList<>())
 				.title("")
@@ -95,7 +95,7 @@ public class DexMenu {
 		String text = " - " +
 				new BigDecimal(Utils.getDexProgress(AccountProvider.getAccount(player)))
 						.setScale(2, RoundingMode.HALF_EVEN).floatValue() + "%";
-		page.setTitle(LavenderMcServerSide.lang.getTitle() + text);
+		page.setTitle(PokeDex.lang.getTitle() + text);
 
 		setPageTitle(page, text);
 		return page;
@@ -104,7 +104,7 @@ public class DexMenu {
 	private void setPageTitle(LinkedPage page, String string) {
 		LinkedPage next = page.getNext();
 		if (next != null) {
-			next.setTitle(LavenderMcServerSide.lang.getTitle() + string);
+			next.setTitle(PokeDex.lang.getTitle() + string);
 			setPageTitle(next, string);
 		}
 	}

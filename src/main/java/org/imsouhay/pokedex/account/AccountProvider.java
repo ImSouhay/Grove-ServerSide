@@ -2,9 +2,10 @@ package org.imsouhay.pokedex.account;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.google.gson.Gson;
-import org.imsouhay.pokedex.util.Utils;
+import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.config.Reward;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ public abstract class AccountProvider {
 	public static void init() {
 		accounts = new HashMap<>();
 
-		File dir = Utils.checkForDirectory(org.imsouhay.LavenderMcServerSide.LavenderMcServerSide.BASE_PATH + "accounts/");
+		File dir = Utils.checkForDirectory(PokeDex.POKE_DEX_PATH + "accounts/");
 
 		String[] files = dir.list();
 
@@ -36,7 +37,7 @@ public abstract class AccountProvider {
 		}
 
 		for (String file : files) {
-			Utils.readFileAsync(org.imsouhay.LavenderMcServerSide.LavenderMcServerSide.BASE_PATH + "accounts/", file, el -> {
+			Utils.readFileAsync(PokeDex.POKE_DEX_PATH + "accounts/", file, el -> {
 				Gson gson = Utils.newGson();
 				Account account = gson.fromJson(el, Account.class);
 				accounts.put(account.getUuid(), account);
@@ -57,7 +58,7 @@ public abstract class AccountProvider {
 			}
 
 			ArrayList<Double> rewardProgresses = new ArrayList<>();
-			for (Reward reward : LavenderMcServerSide.config.getRewards()) {
+			for (Reward reward : PokeDex.config.getRewards()) {
 				if (acc.getReward(reward.getProgress()) == null) {
 					rewardProgresses.add(reward.getProgress());
 				}

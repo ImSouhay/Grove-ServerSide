@@ -1,4 +1,4 @@
-package org.imsouhay.pokedex.command.commands;
+package org.imsouhay.LavenderMcServerSide.command.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;

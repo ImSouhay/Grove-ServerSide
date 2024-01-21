@@ -8,11 +8,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.imsouhay.pokedex.account.AccountProvider;
-import org.imsouhay.pokedex.command.CommandHandler;
+import org.imsouhay.LavenderMcServerSide.command.CommandHandler;
+import org.imsouhay.LavenderMcServerSide.config.GeneralConfig;
+import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.config.Config;
 import org.imsouhay.pokedex.config.Lang;
 import org.imsouhay.pokedex.event.*;
+import org.imsouhay.poketrainer.PokeTrainer;
+import org.imsouhay.poketrainer.account.AccountProvider;
 
 
 @Mod(LavenderMcServerSide.MOD_ID)
@@ -20,11 +23,12 @@ public class LavenderMcServerSide {
     public static final String MOD_ID = "lavenderserverside";
     public static final String BASE_PATH = "/config/" + MOD_ID + "/";
     public static final Logger LOGGER = LogManager.getLogger();
-
-    public static final Config config = new Config();
-    public static final Lang lang = new Lang();
+    public static Lang lang;
+    public static final GeneralConfig gConfig=new GeneralConfig();
 
     public LavenderMcServerSide() {
+        load();
+
         MinecraftForge.EVENT_BUS.register(this);
 
 
@@ -32,20 +36,24 @@ public class LavenderMcServerSide {
         new PokemonCaughtEvent().registerEvent();
         new StarterEvent().registerEvent();
         new TradeEvent().registerEvent();
-
-        load();
     }
 
     @SubscribeEvent
     public void onCommandRegister(RegisterCommandsEvent event){
         CommandHandler.register(event);
     }
+
+
     @SubscribeEvent
-    public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {JoinEvent.onPlayerJoinServer(event);}
+    public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        if(gConfig.isPokeDexEnabled()) JoinEvent.onPlayerJoinServer(event);
+        if(gConfig.isPokeTrainerEnabled()) AccountProvider.registerPlayer(event.getEntity());
+    }
 
     public static void load(){
-        config.init();
-        lang.init();
-        AccountProvider.init();
+        gConfig.init();
+
+        if(gConfig.isPokeDexEnabled()) PokeDex.load();
+        if(gConfig.isPokeTrainerEnabled()) PokeTrainer.load();
     }
 }

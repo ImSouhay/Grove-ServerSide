@@ -4,10 +4,11 @@ import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.google.gson.Gson;
 import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
+import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.pokedex.PokeDex;
+import org.imsouhay.pokedex.config.Reward;
 import org.imsouhay.pokedex.dex.DexEntry;
 import org.imsouhay.pokedex.dex.RewardProgress;
-import org.imsouhay.pokedex.util.Utils;
-import org.imsouhay.pokedex.config.Reward;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ public class Account {
 		}
 
 		rewards = new HashMap<>();
-		for (Reward reward : LavenderMcServerSide.config.getRewards()) {
+		for (Reward reward : PokeDex.config.getRewards()) {
 			rewards.put(reward.getProgress(), new RewardProgress(reward.getProgress(), false, false));
 		}
 		writeToFile();
@@ -126,7 +127,7 @@ public class Account {
 		AccountProvider.updateAccount(this);
 		Gson gson = Utils.newGson();
 
-		CompletableFuture<Boolean> future = Utils.writeFileAsync(LavenderMcServerSide.BASE_PATH + "accounts/",
+		CompletableFuture<Boolean> future = Utils.writeFileAsync(PokeDex.POKE_DEX_PATH + "accounts/",
 				uuid + ".json", gson.toJson(this));
 
 		if (!future.join()) {

@@ -3,7 +3,8 @@ package org.imsouhay.pokedex.util;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
+import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.account.Account;
 import org.imsouhay.pokedex.account.AccountProvider;
 import org.imsouhay.pokedex.config.Reward;
@@ -20,7 +21,7 @@ public abstract class Dexutils {
 			double progress = Utils.getDexProgress(account);
 
 			// Checks if any rewards have been met and completes them.
-			for (Reward reward : LavenderMcServerSide.config.getRewards()) {
+			for (Reward reward : PokeDex.config.getRewards()) {
 				if (progress >= reward.getProgress() &&
 						!account.getReward(reward.getProgress()).isComplete()) {
 					account.completeReward(reward.getProgress());

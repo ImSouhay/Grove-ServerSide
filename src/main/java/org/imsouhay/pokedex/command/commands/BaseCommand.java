@@ -5,12 +5,12 @@ import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import org.imsouhay.pokedex.ui.DexMenu;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
+import org.imsouhay.pokedex.PokeDex;
+import org.imsouhay.pokedex.ui.DexMenu;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,7 +39,7 @@ public class BaseCommand  {
 		ServerPlayer player = context.getSource().getPlayer();
 
 		Collection<Species> list = new ArrayList<>();
-		if (LavenderMcServerSide.config.isImplementedOnly()) {
+		if (PokeDex.config.isImplementedOnly()) {
 			list.addAll(PokemonSpecies.INSTANCE.getImplemented());
 		} else {
 			list.addAll(PokemonSpecies.INSTANCE.getSpecies());

@@ -1,14 +1,22 @@
-package org.imsouhay.pokedex.util;
+package org.imsouhay.LavenderMcServerSide.util;
 
+import ca.landonjw.gooeylibs2.api.button.ButtonAction;
+import ca.landonjw.gooeylibs2.api.template.slot.TemplateSlotDelegate;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
+import com.cobblemon.mod.common.api.pokemon.feature.ChoiceSpeciesFeatureProvider;
+import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeatures;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
+import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.account.Account;
+import org.imsouhay.poketrainer.builder.PokeBuilder;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,6 +29,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -218,11 +228,56 @@ public abstract class Utils {
 
 	public static double getDexProgress(Account account) {
 
-		if (LavenderMcServerSide.config.isImplementedOnly()) {
+		if (PokeDex.config.isImplementedOnly()) {
 			return (double) account.getCaught().size() / PokemonSpecies.INSTANCE.getImplemented().size() * 100;
 		} else {
 			return (double) account.getCaught().size() / PokemonSpecies.INSTANCE.getSpecies().size() * 100;
 		}
+	}
+
+	public static List<ChoiceSpeciesFeatureProvider> getFeatureFromPokemon(Pokemon pokemon) {
+		List<ChoiceSpeciesFeatureProvider> pokemonFeatures = new ArrayList<>();
+
+		SpeciesFeatures.INSTANCE.getFeaturesFor(pokemon.getSpecies()).forEach(e -> {
+					if(e instanceof ChoiceSpeciesFeatureProvider feature) pokemonFeatures.add(feature);
+				}
+		);
+
+		return pokemonFeatures;
+	}
+
+	public static String format(String unFormatted) {
+		if(unFormatted.equalsIgnoreCase("hp")) return "HP";
+
+		StringBuilder output= new StringBuilder();
+
+		String[] words=unFormatted
+				.replace("{{choice}}", "")
+				.replace("-", " ")
+				.replace("_", " ")
+				.replace("]", "")
+				.replace("[", "")
+				.split(" ");
+
+		for(String word:words) {
+			output.append(String.valueOf(word.charAt(0)).toUpperCase());
+			output.append(word.substring(1));
+			output.append(word.equals(words[words.length - 1]) ? "":" ");
+		}
+
+		return output.toString();
+	}
+
+	public static int getPercentage(int value, int maxValue) {
+		return (value/maxValue)*100;
+	}
+
+	public static void balanceNotEnough(ButtonAction e) {
+		e.getPlayer().sendSystemMessage(Component.nullToEmpty("§cYour balance is not enough!"));
+	}
+
+	public static String price(int value) {
+		return "§6Price: §e"+value+" Tokens";
 	}
 
 }

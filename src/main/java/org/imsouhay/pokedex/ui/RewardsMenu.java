@@ -7,17 +7,13 @@ import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import ca.landonjw.gooeylibs2.api.page.GooeyPage;
 import ca.landonjw.gooeylibs2.api.page.Page;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
-import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
+import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.account.Account;
 import org.imsouhay.pokedex.account.AccountProvider;
 import org.imsouhay.pokedex.config.Reward;
-import org.imsouhay.pokedex.util.Utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -32,7 +28,7 @@ public class RewardsMenu {
 
 		int highestSlot = -1;
 		HashMap<Integer, Button> rewards = new HashMap<>();
-		for (Reward reward : LavenderMcServerSide.config.getRewards()) {
+		for (Reward reward : PokeDex.config.getRewards()) {
 			// Finds the highest slot for the row amount.
 			if (reward.getSlotNumber() > highestSlot) {
 				highestSlot = reward.getSlotNumber();
@@ -50,21 +46,11 @@ public class RewardsMenu {
 				} else {
 					lore.add("§aYou can claim this reward!");
 					button.onClick(e -> {
-						CommandSourceStack sourceStack1=new CommandSourceStack(
-								CommandSource.NULL,
-								Vec3.ZERO,
-								Vec2.ZERO,
-								(ServerLevel)null,
-								4,
-								"PokeDex",
-								Component.nullToEmpty("PokeDex"),
-								sourceStack.getServer(),
-								null);
 
 						for(String literalCommand:reward.getCommands()){
 							String finalCommand=Utils.formatCommand(literalCommand, e.getPlayer().getName().getString());
 							e.getPlayer().getServer().getCommands()
-									.performPrefixedCommand(sourceStack1,
+									.performPrefixedCommand(e.getPlayer().getServer().createCommandSourceStack(),
 															finalCommand
 							);
 						}
@@ -90,7 +76,7 @@ public class RewardsMenu {
 		int rows = (int) Math.ceil((double) highestSlot / 9);
 
 		Button filler = GooeyButton.builder()
-				.display(Utils.parseItemId(LavenderMcServerSide.lang.getFillerMaterial()))
+				.display(Utils.parseItemId(PokeDex.lang.getFillerMaterial()))
 				.title("")
 				.lore(new ArrayList<>())
 				.hideFlags(FlagType.All)
@@ -104,7 +90,7 @@ public class RewardsMenu {
 		}
 
 		return GooeyPage.builder()
-				.title(LavenderMcServerSide.lang.getTitle()+" - Rewards")
+				.title(PokeDex.lang.getTitle()+" - Rewards")
 				.template(template.build())
 				.build();
 	}

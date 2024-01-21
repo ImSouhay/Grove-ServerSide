@@ -10,7 +10,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
+import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.account.AccountProvider;
 import org.imsouhay.pokedex.dex.DexEntry;
 import org.imsouhay.pokedex.ui.DexMenu;
@@ -37,7 +37,7 @@ public class NeededCommand {
 
 		ArrayList<Species> species = new ArrayList<>();
 		for (DexEntry entry : caught) {
-			if (LavenderMcServerSide.config.isImplementedOnly()) {
+			if (PokeDex.config.isImplementedOnly()) {
 				if (PokemonSpecies.INSTANCE.getByPokedexNumber(entry.getDexNumber(), Cobblemon.MODID).getImplemented()) {
 					species.add(PokemonSpecies.INSTANCE.getByPokedexNumber(entry.getDexNumber(), Cobblemon.MODID));
 				}

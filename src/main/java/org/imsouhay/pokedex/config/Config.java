@@ -2,7 +2,8 @@ package org.imsouhay.pokedex.config;
 
 import com.google.gson.Gson;
 import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
-import org.imsouhay.pokedex.util.Utils;
+import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.pokedex.PokeDex;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
@@ -35,7 +36,7 @@ public class Config {
 	}
 
 	public void init() {
-		CompletableFuture<Boolean> futureRead = Utils.readFileAsync(LavenderMcServerSide.BASE_PATH,
+		CompletableFuture<Boolean> futureRead = Utils.readFileAsync(PokeDex.POKE_DEX_PATH,
 				"config.json", el -> {
 					Gson gson = Utils.newGson();
 					Config cfg = gson.fromJson(el, Config.class);
@@ -44,19 +45,19 @@ public class Config {
 				});
 
 		if (!futureRead.join()) {
-			LavenderMcServerSide.LOGGER.info("No config.json file found for " + LavenderMcServerSide.MOD_ID + ". Attempting to generate" +
+			LavenderMcServerSide.LOGGER.info("No config.json file found for PokeDex. Attempting to generate" +
 					" " +
 					"one");
 			Gson gson = Utils.newGson();
 			String data = gson.toJson(this);
-			CompletableFuture<Boolean> futureWrite = Utils.writeFileAsync(LavenderMcServerSide.BASE_PATH,
+			CompletableFuture<Boolean> futureWrite = Utils.writeFileAsync(PokeDex.POKE_DEX_PATH,
 					"config.json", data);
 
 			if (!futureWrite.join()) {
-				LavenderMcServerSide.LOGGER.fatal("Could not write config for " + LavenderMcServerSide.MOD_ID + ".");
+				LavenderMcServerSide.LOGGER.fatal("Could not write config for PokeDex.");
 			}
 			return;
 		}
-		LavenderMcServerSide.LOGGER.info(LavenderMcServerSide.MOD_ID + " config file read successfully");
+		LavenderMcServerSide.LOGGER.info("PokeDex config file read successfully");
 	}
 }
