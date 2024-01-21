@@ -4,10 +4,10 @@ LavenderMC-ServerSide
 
 ## Config:
 
-Most configuration files (`config.json` and `lang.json`) are located in: `yourServerDirectory/config/lavenderserverside/pokedex` or `pokebuilder`.
+Most configuration files (`config.json` and `lang.json`) are located in: `yourServerDirectory/config/lavenderserverside/pokedex` & `pokebuilder`.
 
 ### `GeneralConfig.json`:
-- This files has simple things, `pokeDexIsEnabled` and `pokeTrainerIsEnabled`, true meaning that its enabled, and false for disabled (if you switch to false while the server is running you will have to restart the server for it to take effect)
+- This files has two simple things, `pokeDexIsEnabled` and `pokeTrainerIsEnabled`, true meaning that its enabled, and false for disabled (if you switch to false while the server is running you will have to restart the server for it to take effect)
 
 ### `economy/balances/*.json`:
 - This is where players' balances are saved, you can edit it manually from here if you want.
@@ -47,11 +47,11 @@ Most configuration files (`config.json` and `lang.json`) are located in: `yourSe
 ```
 
 ### `pokedex/lang.json`:
-- `title`:The title of the Pokedex menu.
-- `fillerMaterial`:The filler material in the Menus
+- `title`: The title of the Pokedex menu.
+- `fillerMaterial`: The filler material in the Menus
 
 ### `pokedex/accounts/*.json`:
--Stores info about player's progression, claimed rewards and available rewards.
+- Stores info about player's progression, claimed rewards and available rewards.
 
 
 ### `poketrainer/config.json`:
@@ -59,7 +59,7 @@ Most configuration files (`config.json` and `lang.json`) are located in: `yourSe
   * If enabled, players will get chat messages with info when using the poketrainer.
 
 - `defaultBalance`:
-  * The Balance players will get when first time joining.
+  * The Balance players will get when first time joining the server.
 
 - `prices`:
   * The prices of the PokeTrainer stuff, you can only change the number
