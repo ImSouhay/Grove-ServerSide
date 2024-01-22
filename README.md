@@ -4,7 +4,7 @@ LavenderMC-ServerSide
 
 ## Config:
 
-Most configuration files (`config.json` and `lang.json`) are located in: `yourServerDirectory/config/lavenderserverside/pokedex` & `pokebuilder`.
+Most configuration files are located in: `yourServerDirectory/config/lavenderserverside/pokedex` & `pokebuilder`.
 
 ### `GeneralConfig.json`:
 - This files has two simple things, `pokeDexIsEnabled` and `pokeTrainerIsEnabled`, true meaning that its enabled, and false for disabled (if you switch to false while the server is running you will have to restart the server for it to take effect)
