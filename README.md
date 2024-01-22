@@ -1,10 +1,10 @@
 LavenderMC-ServerSide
 =====================
-### A server-side Forge Mod made for Lavender-MC, adds a **PokeDex** and a **PokeBuilder**.
+### A server-side Forge Mod made for Lavender-MC, adds a **PokeDex** and a **PokeTrainer**.
 
 ## Config:
 
-Most configuration files are located in: `yourServerDirectory/config/lavenderserverside/pokedex` & `pokebuilder`.
+Most configuration files are located in: `yourServerDirectory/config/lavenderserverside/pokedex` & `poketrainer`.
 
 ### `GeneralConfig.json`:
 - This files has two simple things, `pokeDexIsEnabled` and `pokeTrainerIsEnabled`, true meaning that its enabled, and false for disabled (if you switch to false while the server is running you will have to restart the server for it to take effect)
