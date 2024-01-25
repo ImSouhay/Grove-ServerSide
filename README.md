@@ -2,20 +2,11 @@ LavenderMC-ServerSide
 =====================
 ### A server-side Forge Mod made for Lavender-MC, adds a **PokeDex** and a **PokeTrainer**.
 
-<a href="https://modrinth.com/mod/gooeylibs" target="_blank">
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="106" height="20" role="img" aria-label="requires: GooeyLibs">
-        <title>downloads: 3.5M</title>
-        <g shape-rendering="crispEdges">
-            <rect width="69" height="20" fill="#555"/>
-            <rect x="69" width="37" height="20" fill="#15ED46"/>
-        </g>
-        <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
-            <text x="355" y="140" transform="scale(.1)" fill="#fff" textLength="590">downloads</text>
-            <text x="865" y="140" transform="scale(.1)" fill="#fff" textLength="270">3.5M</text>
-        </g>
-    </svg>
-</a>
-
+<p align="center">
+  <a href="https://modrinth.com/mod/gooeylibs" target="_blank">
+    <img alt="requirement" src="https://raw.githubusercontent.com/ImSouhay/hub/main/GooeyLibsRequiredIcon.svg" />
+  </a>
+<\p>
 
 ## Config:
 
