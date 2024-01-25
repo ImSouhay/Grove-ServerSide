@@ -6,7 +6,7 @@ LavenderMC-ServerSide
   <a href="https://modrinth.com/mod/gooeylibs" target="_blank">
     <img alt="requirement" src="https://raw.githubusercontent.com/ImSouhay/hub/main/GooeyLibsRequiredIcon.svg" />
   </a>
-<\p>
+
 
 ## Config:
 
