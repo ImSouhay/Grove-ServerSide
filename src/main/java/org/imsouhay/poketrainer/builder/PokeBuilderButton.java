@@ -37,6 +37,7 @@ public class PokeBuilderButton {
     }
 
     private List<String> buildLore(PokeBuilder builder) {
+        PokemonItem.from(builder.getPokemon());
         return new ArrayList<>(Arrays.asList(
                 "§7Held Item: §e"+format(builder.getHeldItem().getDisplayName().getString()),
                 "§7Ability: §e"+format(builder.getAbility().getName()),

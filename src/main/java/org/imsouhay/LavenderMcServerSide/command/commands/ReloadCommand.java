@@ -11,7 +11,7 @@ public class ReloadCommand {
 
     public static void build(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands
-                .literal("reload")
+                .literal("LavenderReload")
                 .executes(ReloadCommand::run)
         );
     }

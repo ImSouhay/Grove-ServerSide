@@ -203,7 +203,6 @@ public class PokeBuilder {
         this.evs.set(stat, newValue);
         this.evStats.replace(stat, newValue);
         this.pokemon.setEV(stat, newValue);
-        LavenderMcServerSide.LOGGER.info("in editEV:"+value+" "+this.evStats.get(stat)+" "+this.evs.get(stat));
     }
 
     public void editIV(Stat stat, int value) {
@@ -216,7 +215,6 @@ public class PokeBuilder {
         this.ivs.set(stat, newValue);
         this.ivStats.replace(stat, newValue);
         this.pokemon.setIV(stat, newValue);
-        LavenderMcServerSide.LOGGER.info("in editIV:"+value+" "+this.ivStats.get(stat)+" "+this.ivs.get(stat));
     }
 
     public void setAbility(Ability ability) {

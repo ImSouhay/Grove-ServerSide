@@ -76,7 +76,6 @@ public class StatEditButton {
 
     private static ArrayList<String> buildLore(String statName,String vType, Operation operation, int num) {
         String defaultLore="§7Click to @incORdec @statName @ivORevs by @num @ivORev(s)!";
-        LavenderMcServerSide.LOGGER.info((operation.toChar()+num+"_statPoint"));
         return new ArrayList<>(List.of(defaultLore
                         .replace("@num", String.valueOf(num))
                         .replace("@incORdec", operation.toString())

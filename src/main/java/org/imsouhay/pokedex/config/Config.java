@@ -10,10 +10,14 @@ import java.util.concurrent.CompletableFuture;
 
 public class Config {
 	private boolean implementedOnly;
+	private boolean isDexLimitEnabled;
+	private int dexLimit;
 	private ArrayList<Reward> rewards;
 
 	public Config() {
 		implementedOnly = true;
+		isDexLimitEnabled = false;
+		dexLimit = 500;
 		rewards = new ArrayList<>();
 		rewards.add(new Reward(10, 10, "cobblemon:poke_ball"));
 		rewards.add(new Reward(20, 12, "cobblemon:great_ball"));
@@ -35,12 +39,22 @@ public class Config {
 		return rewards;
 	}
 
+	public boolean isDexLimitEnabled() {
+		return isDexLimitEnabled;
+	}
+
+	public int getDexLimit() {
+		return dexLimit;
+	}
+
 	public void init() {
 		CompletableFuture<Boolean> futureRead = Utils.readFileAsync(PokeDex.POKE_DEX_PATH,
 				"config.json", el -> {
 					Gson gson = Utils.newGson();
 					Config cfg = gson.fromJson(el, Config.class);
 					implementedOnly = cfg.isImplementedOnly();
+					isDexLimitEnabled =cfg.isDexLimitEnabled();
+					dexLimit =cfg.getDexLimit();
 					rewards = cfg.getRewards();
 				});
 

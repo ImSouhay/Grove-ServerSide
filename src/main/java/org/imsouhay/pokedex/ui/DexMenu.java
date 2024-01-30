@@ -16,6 +16,7 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
 import org.imsouhay.LavenderMcServerSide.util.Utils;
 import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.account.AccountProvider;
@@ -33,6 +34,11 @@ public class DexMenu {
 
 		// For each species, make a button.
 		for (Species dexSpecies : speciesList) {
+
+			if(PokeDex.config.isDexLimitEnabled() && dexSpecies.getNationalPokedexNumber()>PokeDex.config.getDexLimit()) {
+				continue;
+			}
+
 			// Creates the button
 			Pokemon mon = new Pokemon();
 			mon.setSpecies(dexSpecies);
