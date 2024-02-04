@@ -14,7 +14,7 @@ If anything is not working, try placing the config files somewhere, and run the 
 Most configuration files are located in: `yourServerDirectory/config/lavenderserverside/pokedex` & `poketrainer`.
 
 ### `GeneralConfig.json`:
-- This files has two simple things, `pokeDexIsEnabled` and `pokeTrainerIsEnabled`, true meaning that its enabled, and false for disabled (if you switch to false while the server is running you will have to restart the server for it to take effect)
+- This file has two simple things, `pokeDexIsEnabled` and `pokeTrainerIsEnabled`, true meaning that its enabled, and false for disabled (if you switch to false while the server is running you will have to restart the server for it to take effect)
 
 ### `economy/balances/*.json`:
 - This is where players' balances are saved, you can edit it manually from here if you want.
