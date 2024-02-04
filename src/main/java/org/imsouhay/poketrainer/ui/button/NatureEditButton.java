@@ -92,10 +92,12 @@ public class NatureEditButton {
                                 () -> {
                                     if(builder.getNature()!=nature) {
                                         builder.setNature(nature);
-                                        if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("You have set your "+builder.getName()+"'s nature to "+format(nature.getName().getPath())+"."));
+                                        if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "nature", String.valueOf(PokeTrainer.config.getPriceOf("nature")), builder.getName(),
+                                                format(nature.getName().getPath()));
                                         return true;
                                     } else {
-                                        if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("§cYour "+builder.getName()+"'s nature is already set to "+format(nature.getName().getPath())));
+                                        if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "pokemonAlreadyHasNature", String.valueOf(PokeTrainer.config.getPriceOf("nature")), builder.getName(),
+                                                format(nature.getName().getPath()));
                                         return false;
                                     }
                                 })

@@ -72,10 +72,14 @@ public class LevelEditButton {
                                         case MINUS -> -value;
                                     }
                             );
-                            if(PokeTrainer.config.isFeedbackEnabled()) builder.getOwner().sendSystemMessage(Component.nullToEmpty("You have " + operation + " your " + builder.getName() + "'s level by "+value+" for a price of " + PokeTrainer.config.getPriceOf((operation.toChar() + "" + value + "_level")) + "."));
+                            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "levelEdit",
+                                    String.valueOf(PokeTrainer.config.getPriceOf((operation.toChar() + "" + value + "_level"))),
+                                    builder.getName(), operation.toString(), builder.getLevel());
                             return true;
                         } else {
-                            if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("§cYour pokemon lvl is "+builder.getLevel()+"! You can't "+operation+" anymore!"));
+                            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "levelLimitReached",
+                                    String.valueOf(PokeTrainer.config.getPriceOf((operation.toChar() + "" + value + "_level"))),
+                                    builder.getName(), operation.toString(), builder.getLevel());
                             return false;
                         }
                 }

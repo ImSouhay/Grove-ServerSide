@@ -58,12 +58,22 @@ public class SkinEditButton {
                                                 aspects.add(pokemonFeature.getAspectFormat().replace("{{choice}}", choice));
 
                                                 builder.getPokemon().setAspects(aspects);
-                                                if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("You have edited your "+builder.getName()+"'s texture."));
+                                                if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
+                                                        e.getPlayer(),
+                                                        "skinEdit",
+                                                        String.valueOf(PokeTrainer.config.getPriceOf("skin")),
+                                                        builder.getName(),
+                                                        format(choice));
                                                 return true;
                                             }
                                             );
                                     } else {
-                                        if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("§cYou can't apply a texture that you already have."));
+                                        if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
+                                                e.getPlayer(),
+                                                "pokemonAlreadyHasSkin",
+                                                String.valueOf(PokeTrainer.config.getPriceOf("skin")),
+                                                builder.getName(),
+                                                format(choice));
                                     }
                             })
                             .lore(new ArrayList<>(List.of(isChosenChoice[0]?

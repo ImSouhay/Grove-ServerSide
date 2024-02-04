@@ -28,23 +28,38 @@ import java.util.*;
 public class DexMenu {
 
 	public Page getPage(UUID player, Collection<Species> speciesList) {
-		// Creates array if implemented Pokemon.
+
 		ArrayList<Species> implemented = new ArrayList<>(PokemonSpecies.INSTANCE.getImplemented());
-		HashMap<Integer, GooeyButton> pokemon = new HashMap<>();
 
+
+
+		Comparator<Species> comparator = Comparator.comparingInt(Species::getNationalPokedexNumber);
+
+		List<Species> orderedList= new ArrayList<>(speciesList);
+
+		orderedList.sort(comparator);
+
+		ArrayList<Button> sortedButtons = new ArrayList<>();
+		int counter=0;
 		// For each species, make a button.
-		for (Species dexSpecies : speciesList) {
-
-			if(PokeDex.config.isDexLimitEnabled() && dexSpecies.getNationalPokedexNumber()>PokeDex.config.getDexLimit()) {
-				continue;
+		for (Species dexSpecies : orderedList) {
+			LavenderMcServerSide.LOGGER.info(counter);
+			if(PokeDex.config.isDexLimitEnabled() && counter> PokeDex.config.getDexLimit()) {
+				break;
 			}
+			counter++;
 
 			// Creates the button
 			Pokemon mon = new Pokemon();
 			mon.setSpecies(dexSpecies);
 			Collection<String> lore = new ArrayList<>();
-			boolean isCaught =
-					AccountProvider.getAccount(player).getPokemon(dexSpecies.getNationalPokedexNumber()).isCaught();
+			boolean isCaught;
+			try {
+				isCaught =
+						AccountProvider.getAccount(player).getPokemon(dexSpecies.getNationalPokedexNumber()).isCaught();
+			} catch (NullPointerException e) {
+				continue;
+			}
 			if (!implemented.contains(dexSpecies)) {
 				lore.add("§4Not Implemented Currently.");
 			} else {
@@ -52,23 +67,17 @@ public class DexMenu {
 			}
 
 			// Adds button to hashmap.
-			pokemon.put(dexSpecies.getNationalPokedexNumber(),
-					GooeyButton.builder()
-							.display(PokemonItem.from(mon))
-							.title("§8" + dexSpecies.getNationalPokedexNumber() + ": §3" + dexSpecies.getName())
-							.lore(lore)
-							.build()
+			sortedButtons.add(GooeyButton.builder()
+					.display(PokemonItem.from(mon))
+					.title("§8" + dexSpecies.getNationalPokedexNumber() + ": §3" + dexSpecies.getName())
+					.lore(lore)
+					.build()
 			);
 		}
 
-		// Sorts the Pokemon by dex
-		ArrayList<Integer> keys = new ArrayList<>(pokemon.keySet());
-		Collections.sort(keys);
-		ArrayList<Button> sortedButtons = new ArrayList<>();
-		for (int number : keys) {
-			sortedButtons.add(pokemon.get(number));
-		}
 
+
+		LavenderMcServerSide.LOGGER.info("outside of for");
 		PlaceholderButton placeholderButton = new PlaceholderButton();
 
 		LinkedPageButton nextPage = LinkedPageButton.builder()
@@ -99,7 +108,7 @@ public class DexMenu {
 
 		LinkedPage page = PaginationHelper.createPagesFromPlaceholders(template, sortedButtons, null);
 		String text = " - " +
-				new BigDecimal(Utils.getDexProgress(AccountProvider.getAccount(player)))
+                BigDecimal.valueOf(Utils.getDexProgress(AccountProvider.getAccount(player)))
 						.setScale(2, RoundingMode.HALF_EVEN).floatValue() + "%";
 		page.setTitle(PokeDex.lang.getTitle() + text);
 

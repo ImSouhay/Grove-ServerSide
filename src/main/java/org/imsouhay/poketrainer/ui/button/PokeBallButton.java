@@ -75,7 +75,7 @@ public class PokeBallButton {
         return GooeyButton.builder()
                 .title(colorCode+format(ball.getName().getPath()))
                 .display(new ItemStack(ball.item().asItem()))
-                .lore(buildLore(ball.getName().getPath(), ball.getName().getPath()))
+                .lore(buildLore(ball.getName().getPath()))
                 .onClick(e ->
                         TransactionHandler.handleWithdraw(
                                 e,
@@ -83,22 +83,31 @@ public class PokeBallButton {
                                 () -> {
                                     if(builder.getCaughtBall()!=ball) {
                                         builder.setCaughtBall(ball);
-                                        if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("You have set your "+builder.getName()+"'s Caught Ball to "+format(ball.getName().getPath())+"."));
+                                        if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
+                                                e.getPlayer(),
+                                                "pokeball",
+                                                String.valueOf(PokeTrainer.config.getPriceOf(ball.getName().getPath())),
+                                                builder.getName(),
+                                                format(ball.getName().getPath()));
                                         return true;
                                     }
-                                    if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("§cYour "+builder.getName()+" is already caught with this ball."));
+                                    if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(),
+                                            "pokemonAlreadyCaughtWithBall",
+                                            String.valueOf(PokeTrainer.config.getPriceOf(ball.getName().getPath())),
+                                            builder.getName(),
+                                            format(ball.getName().getPath()));
                                     return false;
                                 }
                         ))
                 .build();
     }
 
-    private static ArrayList<String> buildLore(String ballName, String ballPath) {
+    private static ArrayList<String> buildLore(String ballName) {
         String defaultLore="§7Click to change caught ball to @pokeball!";
         return new ArrayList<>(List.of(
                 defaultLore.replace("@pokeball", format(ballName)),
                 "",
-                Utils.price(PokeTrainer.config.getPriceOf(ballPath))));
+                Utils.price(PokeTrainer.config.getPriceOf(ballName))));
     }
 
 }

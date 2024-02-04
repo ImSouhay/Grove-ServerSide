@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 public class RewardsMenu {
@@ -38,18 +39,18 @@ public class RewardsMenu {
 					.display(Utils.parseItemId(reward.getItemMaterial()))
 					.title("§3" + (int) reward.getProgress() + "%");
 
-			ArrayList<String> lore = new ArrayList<>();
+            ArrayList<String> lore = new ArrayList<>(reward.getLore());
 
 			if (progress >= reward.getProgress()) {
 				if (account.getReward(reward.getProgress()).isRedeemed()) {
-					lore.add("§bYou have already claimed this reward");
+					lore.add(PokeDex.config.getRewardAlreadyClaimed());
 				} else {
-					lore.add("§aYou can claim this reward!");
+					lore.add(PokeDex.config.getRewardClaimable());
 					button.onClick(e -> {
 
 						for(String literalCommand:reward.getCommands()){
 							String finalCommand=Utils.formatCommand(literalCommand, e.getPlayer().getName().getString());
-							e.getPlayer().getServer().getCommands()
+							Objects.requireNonNull(e.getPlayer().getServer()).getCommands()
 									.performPrefixedCommand(e.getPlayer().getServer().createCommandSourceStack(),
 															finalCommand
 							);
@@ -59,15 +60,14 @@ public class RewardsMenu {
 
 						account.redeemReward(reward.getProgress());
 						UIManager.closeUI(e.getPlayer());
-						e.getPlayer().sendSystemMessage(Component.nullToEmpty("§c[Pokedex] §2You successfully redeemed the "
-								+ (int) reward.getProgress() + "% dex rewards."));
+						e.getPlayer().sendSystemMessage(Component.nullToEmpty(
+								PokeDex.config.getClaimingMessage().replace("@progress", String.valueOf(reward.getProgress()))
+						));
 					});
 				}
 			} else {
-				lore.add("§cYou need " + reward.getProgress() + " to claim this reward");
-				lore.add("§6Current Progress: " +
-						new BigDecimal(progress).setScale(2, RoundingMode.HALF_EVEN).floatValue()
-				+ "%");
+				lore.add(PokeDex.config.getPercentageNeededToClaim().replace("@progress", String.valueOf(reward.getProgress())));
+				lore.add(PokeDex.config.getCurrentProgress().replace("@progress", String.valueOf(new BigDecimal(progress).setScale(2, RoundingMode.HALF_EVEN).floatValue())));
 			}
 			button.lore(lore);
 			rewards.put(reward.getSlotNumber(), button.build());

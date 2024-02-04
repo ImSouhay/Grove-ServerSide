@@ -16,6 +16,7 @@ import org.imsouhay.pokedex.dex.DexEntry;
 import org.imsouhay.pokedex.ui.DexMenu;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class NeededCommand {
 	public static void build(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -33,12 +34,13 @@ public class NeededCommand {
 
 		ServerPlayer player = context.getSource().getPlayer();
 
-		ArrayList<DexEntry> caught = AccountProvider.getAccount(player.getUUID()).getNeeded();
+		ArrayList<DexEntry> needed = AccountProvider.getAccount(player.getUUID()).getNeeded();
 
 		ArrayList<Species> species = new ArrayList<>();
-		for (DexEntry entry : caught) {
+		for (DexEntry entry : needed) {
 			if (PokeDex.config.isImplementedOnly()) {
-				if (PokemonSpecies.INSTANCE.getByPokedexNumber(entry.getDexNumber(), Cobblemon.MODID).getImplemented()) {
+				Species specie=PokemonSpecies.INSTANCE.getByPokedexNumber(entry.getDexNumber(), Cobblemon.MODID);
+				if (specie!=null && specie.getImplemented()) {
 					species.add(PokemonSpecies.INSTANCE.getByPokedexNumber(entry.getDexNumber(), Cobblemon.MODID));
 				}
 			} else {

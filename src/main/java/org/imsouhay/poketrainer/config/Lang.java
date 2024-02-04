@@ -19,8 +19,8 @@ public class Lang {
         fillerMaterial="minecraft:orange_stained_glass_pane";
         mainMenuFillerMaterial="minecraft:orange_stained_glass_pane";
         homeMenuFillerMaterial="minecraft:orange_stained_glass_pane";
-        mainMenuTitle="PokeBuilder";
-        homeMenuTitle="PokeBuilder - Home";
+        mainMenuTitle="PokeTrainer";
+        homeMenuTitle="PokeTrainer - Home";
     }
 
     public String getFillerMaterial() {return  fillerMaterial;}

@@ -82,23 +82,41 @@ public class StatEditButton {
                         .replace("@statName", format(statName))
                         .replaceAll("@ivORev", vType),
                 "",
-                Utils.price(PokeTrainer.config.getPriceOf((operation.toChar()+""+num+"_statPoint")))));
+                Utils.price(PokeTrainer.config.getPriceOf((operation.toChar()+""+num+"_"+vType)))));
     }
 
     private static void handleVEdit(ButtonAction e, vType type, Stat stat, Operation operation ,int value, PokeBuilder builder) {
         TransactionHandler.handleWithdraw(
                 e,
-                PokeTrainer.config.getPriceOf((operation.toChar()+""+value+"_statPoint")),
+                PokeTrainer.config.getPriceOf((operation.toChar()+""+value+"_"+type.toString())),
                 () -> {
                     if(type==vType.EV) {
                         if((builder.getEvStats().get(stat)!=builder.getEvs().getAcceptableRange().getLast()&&operation==Operation.PLUS) ||
                                 (builder.getEvStats().get(stat)!=0&&operation==Operation.MINUS)) {
                             LavenderMcServerSide.LOGGER.info(builder.getEvStats().get(stat)+" ");
                             builder.editV(type, stat, operation==Operation.PLUS? value:-value);
-                            if(PokeTrainer.config.isFeedbackEnabled()) builder.getOwner().sendSystemMessage(Component.nullToEmpty("You have "+operation+"d your "+builder.getName()+"'s "+format(stat.getIdentifier().getPath())+" "+type+" by "+value+" for a price of "+PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_statPoint")+"."));
+                            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
+                                    e.getPlayer(),
+                                    "statEdit",
+                                    String.valueOf(PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_EV")),
+                                    builder.getName(),
+                                    operation.toString(),
+                                    format(stat.getIdentifier().getPath()),
+                                    type.toString(),
+                                    builder.getIvStats().get(stat)
+                            );
                             return true;
                         } else {
-                            if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("§cYour "+type+"'s "+format(stat.getIdentifier().getPath())+" is at "+builder.getEvStats().get(stat)+"! You can't "+operation+" it!"));
+                            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
+                                    e.getPlayer(),
+                                    "statLimitReached",
+                                    String.valueOf(PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_EV")),
+                                    builder.getName(),
+                                    operation.toString(),
+                                    format(stat.getIdentifier().getPath()),
+                                    type.toString(),
+                                    builder.getIvStats().get(stat)
+                            );
                             return false;
                         }
                     }
@@ -107,10 +125,29 @@ public class StatEditButton {
                                 (builder.getIvStats().get(stat)!=0&&operation==Operation.MINUS)) {
                             LavenderMcServerSide.LOGGER.info(builder.getEvStats().get(stat)+" ");
                             builder.editV(type, stat, operation==Operation.PLUS? value:-value);
-                            if(PokeTrainer.config.isFeedbackEnabled()) builder.getOwner().sendSystemMessage(Component.nullToEmpty("You have "+operation+"d your "+builder.getName()+"'s "+format(stat.getIdentifier().getPath())+" "+type+" by "+value+" for a price of "+PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_statPoint")+"."));
+                            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
+                                    e.getPlayer(),
+                                    "statEdit",
+                                    String.valueOf(PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_IV")),
+                                    builder.getName(),
+                                    operation.toString(),
+                                    format(stat.getIdentifier().getPath()),
+                                    type.toString(),
+                                    builder.getIvStats().get(stat)
+                            );
                             return true;
                         } else {
-                            if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("§cYour "+type+"'s "+format(stat.getIdentifier().getPath())+" is at "+builder.getIvStats().get(stat)+"! You can't "+operation+" it!"));
+                            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
+                                    e.getPlayer(),
+                                    "statLimitReached",
+                                    String.valueOf(PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_IV")),
+                                    builder.getName(),
+                                    operation.toString(),
+                                    format(stat.getIdentifier().getPath()),
+                                    type.toString(),
+                                    builder.getIvStats().get(stat)
+                            );
+
                             return false;
                         }
                     }

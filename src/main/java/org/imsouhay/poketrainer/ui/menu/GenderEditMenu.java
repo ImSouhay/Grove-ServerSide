@@ -36,10 +36,10 @@ public class GenderEditMenu {
                         () -> {
                             if(builder.getGender()!=Gender.MALE) {
                                 builder.setGender(Gender.MALE);
-                                if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("You have set your "+builder.getName()+"'s Gender to male for a price of "+ PokeTrainer.config.getPriceOf("toMale")));
+                                if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "toMale", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("toMale")));
                                 return true;
                             } else {
-                                if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("§cYour "+builder.getName()+" is already male!"));
+                                if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "pokemonAlreadyMale", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("toMale")));
                                 return false;
                             }
                 }))
@@ -54,10 +54,10 @@ public class GenderEditMenu {
                             () -> {
                                 if (builder.getGender() != Gender.FEMALE) {
                                     builder.setGender(Gender.FEMALE);
-                                    if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("You have set your " + builder.getName() + "'s Gender to female for a price of " + PokeTrainer.config.getPriceOf("toFemale")));
+                                    if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "toFemale", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("toFemale")));
                                     return true;
                                 } else {
-                                    if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("§cYour " + builder.getName() + " is already female!"));
+                                    if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "pokemonAlreadyFemale", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("toFemale")));
                                     return false;
                                 }
                             })

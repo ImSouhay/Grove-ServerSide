@@ -48,23 +48,42 @@ public class Config {
         prices.put("-40_level", 27);
         prices.put("-50_level", 35);
 
-        prices.put("+3_statPoint", 10);
-        prices.put("+5_statPoint", 20);
-        prices.put("+10_statPoint", 30);
-        prices.put("+15_statPoint", 50);
-        prices.put("+20_statPoint", 60);
-        prices.put("+30_statPoint", 100);
-        prices.put("+40_statPoint", 125);
-        prices.put("+50_statPoint", 150);
+        prices.put("+3_EV", 10);
+        prices.put("+5_EV", 20);
+        prices.put("+10_EV", 30);
+        prices.put("+15_EV", 50);
+        prices.put("+20_EV", 60);
+        prices.put("+30_EV", 100);
+        prices.put("+40_EV", 125);
+        prices.put("+50_EV", 150);
 
-        prices.put("-3_statPoint", 5);
-        prices.put("-5_statPoint", 7);
-        prices.put("-10_statPoint", 10);
-        prices.put("-15_statPoint", 15);
-        prices.put("-20_statPoint", 17);
-        prices.put("-30_statPoint", 22);
-        prices.put("-40_statPoint", 27);
-        prices.put("-50_statPoint", 35);
+        prices.put("-3_EV", 5);
+        prices.put("-5_EV", 7);
+        prices.put("-10_EV", 10);
+        prices.put("-15_EV", 15);
+        prices.put("-20_EV", 17);
+        prices.put("-30_EV", 22);
+        prices.put("-40_EV", 27);
+        prices.put("-50_EV", 35);
+        
+        prices.put("+3_IV", 10);
+        prices.put("+5_IV", 20);
+        prices.put("+10_IV", 30);
+        prices.put("+15_IV", 50);
+        prices.put("+20_IV", 60);
+        prices.put("+30_IV", 100);
+        prices.put("+40_IV", 125);
+        prices.put("+50_IV", 150);
+
+        prices.put("-3_IV", 5);
+        prices.put("-5_IV", 7);
+        prices.put("-10_IV", 10);
+        prices.put("-15_IV", 15);
+        prices.put("-20_IV", 17);
+        prices.put("-30_IV", 22);
+        prices.put("-40_IV", 27);
+        prices.put("-50_IV", 35);
+        
 
         PokeBalls balls=PokeBalls.INSTANCE;
 

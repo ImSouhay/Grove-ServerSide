@@ -35,10 +35,10 @@ public class ShinyEditMenu {
                         () -> {
                             if(builder.getPokemon().getShiny()) {
                                 builder.getPokemon().setShiny(false);
-                                if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("You have made your " + builder.getName() + " Non-Shiny for a price of " + PokeTrainer.config.getPriceOf("unShiny")));
+                                if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "toNotShiny", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("unShiny")));
                                 return true;
                             } else {
-                                if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("§cYour "+builder.getName()+" is already not shiny!"));
+                                if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "pokemonAlreadyNotShiny", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("unShiny")));
                                 return false;
                             }
                         }))
@@ -55,10 +55,10 @@ public class ShinyEditMenu {
                             () -> {
                                 if (!builder.getPokemon().getShiny()) {
                                     builder.getPokemon().setShiny(true);
-                                    if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("You have made your " + builder.getName() + " Shiny for a price of " + PokeTrainer.config.getPriceOf("shiny")));
+                                    if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "toShiny", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("shiny")));
                                     return true;
                                 } else {
-                                    if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("§cYour " + builder.getName() + " is already shiny!"));
+                                    if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "pokemonAlreadyShiny", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("shiny")));
                                     return false;
                                 }
                             })

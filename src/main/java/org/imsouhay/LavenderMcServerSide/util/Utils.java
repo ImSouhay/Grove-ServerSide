@@ -1,7 +1,6 @@
 package org.imsouhay.LavenderMcServerSide.util;
 
 import ca.landonjw.gooeylibs2.api.button.ButtonAction;
-import ca.landonjw.gooeylibs2.api.template.slot.TemplateSlotDelegate;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.api.pokemon.feature.ChoiceSpeciesFeatureProvider;
 import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeatures;
@@ -10,13 +9,15 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
+import org.imsouhay.LavenderMcServerSide.exception.InvalidItemIdException;
 import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.account.Account;
-import org.imsouhay.poketrainer.builder.PokeBuilder;
+import org.imsouhay.poketrainer.PokeTrainer;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -200,7 +201,7 @@ public abstract class Utils {
 	 * @return Gson instance.
 	 */
 	public static Gson newGson() {
-		return new GsonBuilder().setPrettyPrinting().create();
+		return new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 	}
 
 	/**
@@ -209,15 +210,9 @@ public abstract class Utils {
 	 * @return ItemStack
 	 */
 	public static ItemStack parseItemId(String id) {
-		String[] parts=id.split(":");
-
-		String namespace=parts[0];
-		String path=parts[1];
-
-		ResourceLocation key=new ResourceLocation(namespace, path);
-		Item item= ForgeRegistries.ITEMS.getValue(key);
+		Item item= ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
 		if(item==null){
-			LavenderMcServerSide.LOGGER.fatal("Can't find Item with id: "+id+".");
+			throw new InvalidItemIdException(id);
 		}
 		return new ItemStack(item);
 	}
@@ -273,7 +268,50 @@ public abstract class Utils {
 	}
 
 	public static void balanceNotEnough(ButtonAction e) {
-		e.getPlayer().sendSystemMessage(Component.nullToEmpty("§cYour balance is not enough!"));
+		e.getPlayer().sendSystemMessage(Component.nullToEmpty(PokeTrainer.fBack.get("BalanceNotEnough")));
+	}
+
+	public static void sendFeedBack(ServerPlayer player, String key) {
+		sendFeedBack(player, key, "", "", "", "", "", 0, "", "", "", "");
+	}
+	public static void sendFeedBack(ServerPlayer player, String key, String pokemonName) {
+		sendFeedBack(player, key, pokemonName, "", "", "", "", 0, "", "", "", "");
+	}
+	public static void sendFeedBack(ServerPlayer player, String key, String pokemonName,
+									String price) {
+		sendFeedBack(player, key, pokemonName, price, "", "", "", 0, "", "", "", "");
+	}
+
+	public static void sendFeedBack(ServerPlayer player, String key, String price,
+									String pokemonName, String operation, int value) {
+		sendFeedBack(player, key, pokemonName, price, "", "", operation, value, "", "", "", "");
+	}
+
+	public static void sendFeedBack(ServerPlayer player, String key, String price, String pokemonName,
+									String something/* this can be pokeball OR natureName OR abilityName OR skin*/) {
+		sendFeedBack(player, key, pokemonName, price, something, something, "", 0, something, something, "", "");
+	}
+
+	public static void sendFeedBack(ServerPlayer player, String key, String price, String pokemonName,
+									String operation, String stat, String vType, int value) {
+		sendFeedBack(player, key, pokemonName, price, "", "", operation, value, "", "", stat, vType);
+	}
+
+	public static void sendFeedBack(ServerPlayer player, String key, String pokemonName,
+									String price, String abilityName, String natureName, String operation,
+									int value, String pokeBall, String skin, String stat, String vType) {
+		player.sendSystemMessage(Component.nullToEmpty(PokeTrainer.fBack.get(key)
+				.replace("@pokemon", pokemonName)
+				.replace("@price", price)
+				.replace("@ability", abilityName)
+				.replace("@nature", natureName)
+				.replace("@operation", operation)
+				.replace("@value", String.valueOf(value))
+				.replace("@pokeball", pokeBall)
+				.replace("@skin", skin)
+				.replace("@stat", stat)
+				.replace("@vtype", vType)
+		));
 	}
 
 	public static String price(int value) {

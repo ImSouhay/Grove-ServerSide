@@ -5,6 +5,8 @@ import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
 import org.imsouhay.LavenderMcServerSide.util.Utils;
 import org.imsouhay.pokedex.PokeDex;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
@@ -12,12 +14,22 @@ public class Config {
 	private boolean implementedOnly;
 	private boolean isDexLimitEnabled;
 	private int dexLimit;
+	private String rewardClaimable;
+	private String rewardAlreadyClaimed;
+	private String claimingMessage;
+	private String percentageNeededToClaim;
+	private String currentProgress;
 	private ArrayList<Reward> rewards;
 
 	public Config() {
 		implementedOnly = true;
 		isDexLimitEnabled = false;
 		dexLimit = 500;
+		rewardClaimable="§aYou can claim this reward!";
+		rewardAlreadyClaimed="§bYou have already claimed this reward";
+		claimingMessage="§c[Pokedex] §2You successfully redeemed the @progress% dex rewards.";
+		percentageNeededToClaim="§cYou need @progress to claim this reward";
+		currentProgress="§6Current Progress: @progress%";
 		rewards = new ArrayList<>();
 		rewards.add(new Reward(10, 10, "cobblemon:poke_ball"));
 		rewards.add(new Reward(20, 12, "cobblemon:great_ball"));
@@ -47,6 +59,26 @@ public class Config {
 		return dexLimit;
 	}
 
+	public String getRewardClaimable() {
+		return rewardClaimable;
+	}
+
+	public String getRewardAlreadyClaimed() {
+		return rewardAlreadyClaimed;
+	}
+
+	public String getClaimingMessage() {
+		return claimingMessage;
+	}
+
+	public String getPercentageNeededToClaim() {
+		return percentageNeededToClaim;
+	}
+
+	public String getCurrentProgress() {
+		return currentProgress;
+	}
+
 	public void init() {
 		CompletableFuture<Boolean> futureRead = Utils.readFileAsync(PokeDex.POKE_DEX_PATH,
 				"config.json", el -> {
@@ -56,6 +88,11 @@ public class Config {
 					isDexLimitEnabled =cfg.isDexLimitEnabled();
 					dexLimit =cfg.getDexLimit();
 					rewards = cfg.getRewards();
+					percentageNeededToClaim= cfg.getPercentageNeededToClaim();
+					currentProgress= cfg.getCurrentProgress();
+					rewardClaimable= cfg.getRewardClaimable();
+					rewardAlreadyClaimed= cfg.getRewardAlreadyClaimed();
+					claimingMessage= cfg.getClaimingMessage();
 				});
 
 		if (!futureRead.join()) {

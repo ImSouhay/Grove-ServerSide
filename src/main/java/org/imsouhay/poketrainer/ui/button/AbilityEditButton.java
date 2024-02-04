@@ -50,10 +50,10 @@ public class AbilityEditButton {
                             () -> {
                                 if(builder.getPokemon().getAbility().getTemplate()!=ability.getTemplate()) {
                                     builder.setAbility(ability);
-                                    if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("You have applied the "+format(ability.getName())+" ability on your "+builder.getName()+" for a price of "+PokeTrainer.config.getPriceOf("ability")+"."));
+                                    if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "ability", String.valueOf(PokeTrainer.config.getPriceOf("ability")), builder.getName(), format(ability.getName()));
                                     return true;
                                 }
-                                if(PokeTrainer.config.isFeedbackEnabled()) e.getPlayer().sendSystemMessage(Component.nullToEmpty("§cYour "+builder.getName()+" already has this ability."));
+                                if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "pokemonAlreadyHasAbility", String.valueOf(PokeTrainer.config.getPriceOf("ability")), builder.getName(), format(ability.getName()));
                                 return false;
                             })
 
