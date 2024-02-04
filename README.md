@@ -39,7 +39,7 @@ Most configuration files are located in: `yourServerDirectory/config/lavenderser
     - `slotNumber`: Slot in the `/reward` menu, ranging from 0 at the top left to 8 at the top right, then 45 at the bottom left, and finally 53 at the bottom right.
     - `itemMaterial`: ID of the item shown in the `/reward` menu (e.g., `minecraft:diamond_sword`).
     - `commands`: Commands executed when the player claims the reward. Use `@player` to represent the player's name.
-    - `lore`: Extra lore, for example (`§f+5 §cRedStone!`).
+    - `lore`: Extra lore, for example (`§f+5 §cRedStone!`), the `@progress` gets replaced by the relevant progress value in each case.
 
 #### Example:
 
@@ -108,6 +108,15 @@ Most configuration files are located in: `yourServerDirectory/config/lavenderser
 
 ### `poketrainer/feedback.json`:
 - Stores the feedbacks players get in the poketrainer, You are only allowed to change the feedback, changing the identifier will cause the poketrainer to stop working.
+- keywords: words that get replaced by other specefic things
+  - `@pokemon`: pokemon name.
+  - `@price`: edit price.
+  - `@ability`: ability name.
+  - `@nature`: nature name.
+  - `@operation`: increase or decrease.
+  - `@value`: a number, different in each case. (for example, in `levelEdit` it gets replaced by the number of levels)
+  - `@stat`: Attack or Defense or Speed or Health or Special Attack or Special Defense.
+  - `@vtype`: EV or IV.
 
 
 # Commands:
