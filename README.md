@@ -7,7 +7,7 @@ LavenderMC-ServerSide
     <img alt="requirement" src="https://raw.githubusercontent.com/ImSouhay/hub/main/GooeyLibsRequiredIcon.svg" />
   </a>
 
-# If anything is not working, try placing the config files somewhere, and run the mod so new files with the new features are made, and then you can copy your old config back, without deleting anything that have been added
+If anything is not working, try placing the config files somewhere, and run the mod so new files with the new features are made, and then you can copy your old config back, without deleting anything that have been added
 
 ## Config:
 
