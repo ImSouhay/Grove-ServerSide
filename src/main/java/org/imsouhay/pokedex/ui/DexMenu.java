@@ -43,7 +43,6 @@ public class DexMenu {
 		int counter=0;
 		// For each species, make a button.
 		for (Species dexSpecies : orderedList) {
-			LavenderMcServerSide.LOGGER.info(counter);
 			if(PokeDex.config.isDexLimitEnabled() && counter> PokeDex.config.getDexLimit()) {
 				break;
 			}
@@ -75,9 +74,6 @@ public class DexMenu {
 			);
 		}
 
-
-
-		LavenderMcServerSide.LOGGER.info("outside of for");
 		PlaceholderButton placeholderButton = new PlaceholderButton();
 
 		LinkedPageButton nextPage = LinkedPageButton.builder()
