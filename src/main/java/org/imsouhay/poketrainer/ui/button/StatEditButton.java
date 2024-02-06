@@ -42,22 +42,45 @@ public class StatEditButton {
                 .lore(new ArrayList<>())
                 .display(Utils.parseItemId(PokeTrainer.lang.getFillerMaterial()))
                 .build();
-        
-        buttons=new LinkedList<>(Arrays.asList(
-                buildButton(stat, type, operation, displayItem, 3, builder),
-                buildButton(stat, type, operation, displayItem, 5, builder),
-                buildButton(stat, type, operation, displayItem, 10, builder),
-                buildButton(stat, type, operation, displayItem, 15, builder),
-                buildButton(stat, type, operation, displayItem, 20, builder),
-                filler,
-                buildButton(stat, type, operation, displayItem, 30, builder),
-                buildButton(stat, type, operation, displayItem, 40, builder),
-                buildButton(stat, type, operation, displayItem, 50, builder),
-                filler
-                
-        ));
-        
+
+        switch (type) {
+            case EV -> makeEVButtons(stat, operation, displayItem, builder, filler);
+            case IV -> makeIVButtons(stat, operation, displayItem, builder, filler);
+        }
     }
+
+    private static void makeIVButtons(Stat stat, Operation operation,
+                                      Item displayItem, PokeBuilder builder, Button filler) {
+        buttons=new LinkedList<>(Arrays.asList(
+                filler,
+                buildButton(stat, vType.IV, operation, displayItem, 1, builder),
+                buildButton(stat, vType.IV, operation, displayItem, 3, builder),
+                buildButton(stat, vType.IV, operation, displayItem, 5, builder),
+                filler,
+                filler,
+                buildButton(stat, vType.IV, operation, displayItem, 10, builder),
+                buildButton(stat, vType.IV, operation, displayItem, 15, builder),
+                buildButton(stat, vType.IV, operation, displayItem, 31, builder),
+                filler
+        ));
+    }
+
+    private static void makeEVButtons(Stat stat, Operation operation,
+                                      Item displayItem, PokeBuilder builder, Button filler) {
+        buttons=new LinkedList<>(Arrays.asList(
+                buildButton(stat, vType.EV, operation, displayItem, 3, builder),
+                buildButton(stat, vType.EV, operation, displayItem, 5, builder),
+                buildButton(stat, vType.EV, operation, displayItem, 10, builder),
+                buildButton(stat, vType.EV, operation, displayItem, 15, builder),
+                buildButton(stat, vType.EV, operation, displayItem, 20, builder),
+                filler,
+                buildButton(stat, vType.EV, operation, displayItem, 30, builder),
+                buildButton(stat, vType.EV, operation, displayItem, 40, builder),
+                buildButton(stat, vType.EV, operation, displayItem, 50, builder),
+                filler
+        ));
+    }
+
 
     private static Button buildButton(Stat stat, vType type, Operation operation, Item displayItem, int num, PokeBuilder builder) {
         char plusOrMinus= operation.toChar();
@@ -91,70 +114,80 @@ public class StatEditButton {
                 PokeTrainer.config.getPriceOf((operation.toChar()+""+value+"_"+type.toString())),
                 () -> {
                     if(type==vType.EV) {
-                        if((builder.getEvStats().get(stat)!=builder.getEvs().getAcceptableRange().getLast()&&operation==Operation.PLUS) ||
-                                (builder.getEvStats().get(stat)!=0&&operation==Operation.MINUS)) {
-                            LavenderMcServerSide.LOGGER.info(builder.getEvStats().get(stat)+" ");
-                            builder.editV(type, stat, operation==Operation.PLUS? value:-value);
-                            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
-                                    e.getPlayer(),
-                                    "statEdit",
-                                    String.valueOf(PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_EV")),
-                                    builder.getName(),
-                                    operation.toString(),
-                                    format(stat.getIdentifier().getPath()),
-                                    type.toString(),
-                                    builder.getIvStats().get(stat)
-                            );
-                            return true;
-                        } else {
-                            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
-                                    e.getPlayer(),
-                                    "statLimitReached",
-                                    String.valueOf(PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_EV")),
-                                    builder.getName(),
-                                    operation.toString(),
-                                    format(stat.getIdentifier().getPath()),
-                                    type.toString(),
-                                    builder.getIvStats().get(stat)
-                            );
-                            return false;
-                        }
+                        return handleEVEdit(e, type, stat, operation, value, builder);
                     }
                     if(type==vType.IV) {
-                        if((builder.getIvStats().get(stat)!=builder.getIvs().getAcceptableRange().getLast()&&operation==Operation.PLUS) ||
-                                (builder.getIvStats().get(stat)!=0&&operation==Operation.MINUS)) {
-                            LavenderMcServerSide.LOGGER.info(builder.getEvStats().get(stat)+" ");
-                            builder.editV(type, stat, operation==Operation.PLUS? value:-value);
-                            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
-                                    e.getPlayer(),
-                                    "statEdit",
-                                    String.valueOf(PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_IV")),
-                                    builder.getName(),
-                                    operation.toString(),
-                                    format(stat.getIdentifier().getPath()),
-                                    type.toString(),
-                                    builder.getIvStats().get(stat)
-                            );
-                            return true;
-                        } else {
-                            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
-                                    e.getPlayer(),
-                                    "statLimitReached",
-                                    String.valueOf(PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_IV")),
-                                    builder.getName(),
-                                    operation.toString(),
-                                    format(stat.getIdentifier().getPath()),
-                                    type.toString(),
-                                    builder.getIvStats().get(stat)
-                            );
-
-                            return false;
-                        }
+                        return handleIVEdit(e, type, stat, operation, value, builder);
                     }
                     return false;
                 }
 
                 );
+    }
+
+    private static boolean handleEVEdit(ButtonAction e, vType type, Stat stat,
+                                 Operation operation ,int value, PokeBuilder builder) {
+        if((builder.getEvStats().get(stat)!=builder.getEvs().getAcceptableRange().getLast()&&operation==Operation.PLUS) ||
+                (builder.getEvStats().get(stat)!=0&&operation==Operation.MINUS)) {
+            LavenderMcServerSide.LOGGER.info(builder.getEvStats().get(stat)+" ");
+            builder.editV(type, stat, operation==Operation.PLUS? value:-value);
+            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
+                    e.getPlayer(),
+                    "statEdit",
+                    String.valueOf(PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_EV")),
+                    builder.getName(),
+                    operation.toString(),
+                    format(stat.getIdentifier().getPath()),
+                    type.toString(),
+                    builder.getIvStats().get(stat)
+            );
+            return true;
+        } else {
+            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
+                    e.getPlayer(),
+                    "statLimitReached",
+                    String.valueOf(PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_EV")),
+                    builder.getName(),
+                    operation.toString(),
+                    format(stat.getIdentifier().getPath()),
+                    type.toString(),
+                    builder.getIvStats().get(stat)
+            );
+            return false;
+        }
+    }
+
+    private static boolean handleIVEdit(ButtonAction e, vType type, Stat stat,
+                                 Operation operation ,int value, PokeBuilder builder) {
+        if((builder.getIvStats().get(stat)!=builder.getIvs().getAcceptableRange().getLast()&&operation==Operation.PLUS) ||
+                (builder.getIvStats().get(stat)!=0&&operation==Operation.MINUS)) {
+            LavenderMcServerSide.LOGGER.info(builder.getEvStats().get(stat)+" ");
+            builder.editV(type, stat, operation==Operation.PLUS? value:-value);
+            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
+                    e.getPlayer(),
+                    "statEdit",
+                    String.valueOf(PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_IV")),
+                    builder.getName(),
+                    operation.toString(),
+                    format(stat.getIdentifier().getPath()),
+                    type.toString(),
+                    builder.getIvStats().get(stat)
+            );
+            return true;
+        } else {
+            if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
+                    e.getPlayer(),
+                    "statLimitReached",
+                    String.valueOf(PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_IV")),
+                    builder.getName(),
+                    operation.toString(),
+                    format(stat.getIdentifier().getPath()),
+                    type.toString(),
+                    builder.getIvStats().get(stat)
+            );
+
+            return false;
+        }
     }
 
 }

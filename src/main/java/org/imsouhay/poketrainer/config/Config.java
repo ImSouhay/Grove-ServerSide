@@ -66,23 +66,19 @@ public class Config {
         prices.put("-40_EV", 27);
         prices.put("-50_EV", 35);
         
-        prices.put("+3_IV", 10);
-        prices.put("+5_IV", 20);
-        prices.put("+10_IV", 30);
-        prices.put("+15_IV", 50);
-        prices.put("+20_IV", 60);
-        prices.put("+30_IV", 100);
-        prices.put("+40_IV", 125);
-        prices.put("+50_IV", 150);
+        prices.put("+1_IV", 10);
+        prices.put("+3_IV", 20);
+        prices.put("+5_IV", 30);
+        prices.put("+10_IV", 50);
+        prices.put("+15_IV", 60);
+        prices.put("+31_IV", 100);
 
+        prices.put("-1_IV", 1);
         prices.put("-3_IV", 5);
         prices.put("-5_IV", 7);
         prices.put("-10_IV", 10);
         prices.put("-15_IV", 15);
-        prices.put("-20_IV", 17);
-        prices.put("-30_IV", 22);
-        prices.put("-40_IV", 27);
-        prices.put("-50_IV", 35);
+        prices.put("-31_IV", 17);
         
 
         PokeBalls balls=PokeBalls.INSTANCE;
