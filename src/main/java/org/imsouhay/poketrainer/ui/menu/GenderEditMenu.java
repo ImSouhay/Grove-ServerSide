@@ -6,7 +6,6 @@ import ca.landonjw.gooeylibs2.api.page.GooeyPage;
 import ca.landonjw.gooeylibs2.api.page.Page;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import com.cobblemon.mod.common.pokemon.Gender;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.imsouhay.LavenderMcServerSide.util.Utils;
@@ -37,6 +36,7 @@ public class GenderEditMenu {
                             if(builder.getGender()!=Gender.MALE) {
                                 builder.setGender(Gender.MALE);
                                 if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "toMale", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("toMale")));
+                                builder.reloadButton();
                                 return true;
                             } else {
                                 if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "pokemonAlreadyMale", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("toMale")));
@@ -55,6 +55,7 @@ public class GenderEditMenu {
                                 if (builder.getGender() != Gender.FEMALE) {
                                     builder.setGender(Gender.FEMALE);
                                     if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "toFemale", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("toFemale")));
+                                    builder.reloadButton();
                                     return true;
                                 } else {
                                     if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "pokemonAlreadyFemale", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("toFemale")));

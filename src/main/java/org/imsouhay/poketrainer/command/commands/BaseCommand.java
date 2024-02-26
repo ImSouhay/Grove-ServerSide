@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import org.imsouhay.LavenderMcServerSide.config.Permissions;
 import org.imsouhay.poketrainer.ui.MainMenu;
 
 public class BaseCommand {
@@ -13,6 +14,14 @@ public class BaseCommand {
     public static void build(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(Commands.literal("poketrainer")
+                .requires(sourceStack -> {
+                    if (sourceStack.isPlayer()) {
+                        return Permissions.INSTANCE.hasPermission(
+                                sourceStack.getPlayer(),
+                                Permissions.INSTANCE.getPermission("PokeTrainerBase"));
+                    }
+                    return true;}
+                )
                 .executes(BaseCommand::run));
 
     }

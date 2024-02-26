@@ -10,7 +10,7 @@ public class PokeDex {
 
     public static final Lang lang=new Lang();
     public static final Config config=new Config();
-    public static final String POKE_DEX_PATH = LavenderMcServerSide.BASE_PATH+"/pokedex/";
+    public static final String POKE_DEX_PATH = LavenderMcServerSide.BASE_PATH+"pokedex/";
 
     public static void load() {
         config.init();

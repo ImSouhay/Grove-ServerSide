@@ -17,26 +17,16 @@ import java.util.Map;
 import static org.imsouhay.LavenderMcServerSide.util.Utils.format;
 
 public class PokeBuilderButton {
-    private Button button;
 
-    public Button build(PokeBuilder builder) {
-        button = GooeyButton.builder()
+    public static GooeyButton build(PokeBuilder builder) {
+        return GooeyButton.builder()
                 .title("§b"+builder.getName())
                 .display(PokemonItem.from(builder.getPokemon()))
                 .lore(buildLore(builder))
                 .build();
-        return button;
     }
 
-    public Button getButton() {
-        return button;
-    }
-
-    public void rebuild(PokeBuilder builder) {
-        this.build(builder);
-    }
-
-    private List<String> buildLore(PokeBuilder builder) {
+    public static List<String> buildLore(PokeBuilder builder) {
         PokemonItem.from(builder.getPokemon());
         return new ArrayList<>(Arrays.asList(
                 "§7Held Item: §e"+format(builder.getHeldItem().getDisplayName().getString()),
@@ -55,7 +45,7 @@ public class PokeBuilderButton {
         ));
     }
 
-    private String buildStatsLine(Map<Stat, Integer> map) {
+    private static String buildStatsLine(Map<Stat, Integer> map) {
         return String.format(
                 "§cHP: %d §7/ §6Atk: %d §7/ §eDef: %d §7/ §9SpA %d §7/ §aSpD: %d §7/ §fSpe %d",
                 map.get(Stats.HP),
@@ -67,12 +57,12 @@ public class PokeBuilderButton {
         );
     }
 
-    private String buildMovesLine(MoveSet moveSet) {
+    private static String buildMovesLine(MoveSet moveSet) {
         StringBuilder result= new StringBuilder();
         List<Move> moves=moveSet.getMoves();
 
         for(Move move: moves) {
-            result.append("§b"+format(move.getName()));
+            result.append("§b").append(format(move.getName()));
             if(moves.size()!=moves.indexOf(move)+1) {
                 result.append(" §7- ");
             }

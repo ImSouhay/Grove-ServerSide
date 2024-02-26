@@ -6,11 +6,8 @@ import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import com.cobblemon.mod.common.CobblemonItems;
 import com.cobblemon.mod.common.api.pokemon.Natures;
 import com.cobblemon.mod.common.pokemon.Nature;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
 import org.imsouhay.LavenderMcServerSide.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 import org.imsouhay.poketrainer.builder.PokeBuilder;
@@ -94,6 +91,7 @@ public class NatureEditButton {
                                         builder.setNature(nature);
                                         if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "nature", String.valueOf(PokeTrainer.config.getPriceOf("nature")), builder.getName(),
                                                 format(nature.getName().getPath()));
+                                        builder.reloadButton();
                                         return true;
                                     } else {
                                         if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "pokemonAlreadyHasNature", String.valueOf(PokeTrainer.config.getPriceOf("nature")), builder.getName(),

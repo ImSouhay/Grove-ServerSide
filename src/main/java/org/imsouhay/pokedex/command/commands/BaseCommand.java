@@ -9,6 +9,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import org.imsouhay.LavenderMcServerSide.config.Permissions;
 import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.ui.DexMenu;
 
@@ -20,6 +21,14 @@ public class BaseCommand  {
 
 		dispatcher.register(
 				Commands.literal("dex")
+						.requires(sourceStack -> {
+							if (sourceStack.isPlayer()) {
+								return Permissions.INSTANCE.hasPermission(
+										sourceStack.getPlayer(),
+										Permissions.INSTANCE.getPermission("PokeDexBase"));
+							}
+							return true;}
+						)
                 		.executes(BaseCommand::run)
                 );
 
@@ -45,7 +54,7 @@ public class BaseCommand  {
 			list.addAll(PokemonSpecies.INSTANCE.getSpecies());
 		}
 
-		UIManager.openUIForcefully(player, new DexMenu().getPage(player.getUUID() , list));
+		UIManager.openUIForcefully(player, DexMenu.getPage(player.getUUID() , list));
 		return 1;
 	}
 }

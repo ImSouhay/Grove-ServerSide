@@ -4,7 +4,6 @@ import ca.landonjw.gooeylibs2.api.button.Button;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import com.cobblemon.mod.common.CobblemonItems;
 import com.cobblemon.mod.common.api.abilities.Ability;
-import net.minecraft.network.chat.Component;
 import org.imsouhay.LavenderMcServerSide.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 import org.imsouhay.poketrainer.builder.PokeBuilder;
@@ -51,6 +50,7 @@ public class AbilityEditButton {
                                 if(builder.getPokemon().getAbility().getTemplate()!=ability.getTemplate()) {
                                     builder.setAbility(ability);
                                     if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "ability", String.valueOf(PokeTrainer.config.getPriceOf("ability")), builder.getName(), format(ability.getName()));
+                                    builder.reloadButton();
                                     return true;
                                 }
                                 if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "pokemonAlreadyHasAbility", String.valueOf(PokeTrainer.config.getPriceOf("ability")), builder.getName(), format(ability.getName()));

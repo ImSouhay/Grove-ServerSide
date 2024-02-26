@@ -3,7 +3,6 @@ package org.imsouhay.poketrainer.ui.button;
 import ca.landonjw.gooeylibs2.api.button.Button;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import com.cobblemon.mod.common.api.pokemon.feature.ChoiceSpeciesFeatureProvider;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.imsouhay.LavenderMcServerSide.util.Utils;
@@ -64,6 +63,7 @@ public class SkinEditButton {
                                                         String.valueOf(PokeTrainer.config.getPriceOf("skin")),
                                                         builder.getName(),
                                                         format(choice));
+                                                builder.reloadButton();
                                                 return true;
                                             }
                                             );

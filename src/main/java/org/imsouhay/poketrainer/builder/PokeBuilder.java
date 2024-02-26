@@ -1,7 +1,6 @@
 package org.imsouhay.poketrainer.builder;
 
-import ca.landonjw.gooeylibs2.api.button.Button;
-import ca.landonjw.gooeylibs2.api.button.ButtonAction;
+import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.abilities.Ability;
 import com.cobblemon.mod.common.api.moves.MoveSet;
@@ -11,7 +10,6 @@ import com.cobblemon.mod.common.pokeball.PokeBall;
 import com.cobblemon.mod.common.pokemon.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
 import org.imsouhay.poketrainer.util.vType;
 
 import java.util.HashMap;
@@ -22,8 +20,9 @@ import static org.imsouhay.LavenderMcServerSide.util.Utils.format;
 public class PokeBuilder {
 
     private final Pokemon pokemon;
-    private final ServerPlayer owner;
-    private final PokeBuilderButton button;
+    private GooeyButton guiButton;
+    private ServerPlayer owner;
+    private PokeBuilderButton button;
     private String name;
     private ItemStack heldItem;
     private Ability ability;
@@ -47,13 +46,13 @@ public class PokeBuilder {
 
     public PokeBuilder(ServerPlayer player, int slot) {
         this.pokemon= Cobblemon.INSTANCE.getStorage().getParty(player).get(slot);
-        this.owner= player;
-        button=new PokeBuilderButton();
-
-        if(this.pokemon==null) {
+        if(pokemon==null) {
             exists=false;
             return;
         }
+
+        this.owner= player;
+        button=new PokeBuilderButton();
 
         this.name= format(pokemon.getSpecies().getName());
         this.heldItem= this.pokemon.heldItem();
@@ -184,6 +183,12 @@ public class PokeBuilder {
     public int getEVsTotal() {
         return this.EVsTotal;
     }
+
+    public GooeyButton getGuiButton() {
+        return guiButton;
+    }
+
+
     // Set Methods
 
     public void editV(vType type, Stat stat, int value) {
@@ -279,5 +284,16 @@ public class PokeBuilder {
         
     }
 
+    public void setGuiButton(GooeyButton guiButton) {
+        this.guiButton = guiButton;
+    }
+
     public boolean exists() {return exists;}
+
+    public void reloadButton() {
+        this.guiButton=PokeBuilderButton.build(this);
+        this.guiButton.update();
+    }
+
+
 }

@@ -5,7 +5,6 @@ import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import ca.landonjw.gooeylibs2.api.page.GooeyPage;
 import ca.landonjw.gooeylibs2.api.page.Page;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.imsouhay.LavenderMcServerSide.util.Utils;
@@ -36,6 +35,7 @@ public class ShinyEditMenu {
                             if(builder.getPokemon().getShiny()) {
                                 builder.getPokemon().setShiny(false);
                                 if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "toNotShiny", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("unShiny")));
+                                builder.reloadButton();
                                 return true;
                             } else {
                                 if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "pokemonAlreadyNotShiny", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("unShiny")));
@@ -56,6 +56,7 @@ public class ShinyEditMenu {
                                 if (!builder.getPokemon().getShiny()) {
                                     builder.getPokemon().setShiny(true);
                                     if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "toShiny", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("shiny")));
+                                    builder.reloadButton();
                                     return true;
                                 } else {
                                     if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "pokemonAlreadyShiny", builder.getName(), String.valueOf(PokeTrainer.config.getPriceOf("shiny")));

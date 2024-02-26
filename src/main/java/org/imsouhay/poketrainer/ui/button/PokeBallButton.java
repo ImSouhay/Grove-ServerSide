@@ -6,7 +6,6 @@ import ca.landonjw.gooeylibs2.api.button.FlagType;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import com.cobblemon.mod.common.api.pokeball.PokeBalls;
 import com.cobblemon.mod.common.pokeball.PokeBall;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.imsouhay.LavenderMcServerSide.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
@@ -89,6 +88,7 @@ public class PokeBallButton {
                                                 String.valueOf(PokeTrainer.config.getPriceOf(ball.getName().getPath())),
                                                 builder.getName(),
                                                 format(ball.getName().getPath()));
+                                        builder.reloadButton();
                                         return true;
                                     }
                                     if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(),

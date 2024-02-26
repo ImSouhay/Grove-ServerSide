@@ -10,6 +10,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import org.imsouhay.LavenderMcServerSide.config.Permissions;
 import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.account.AccountProvider;
 import org.imsouhay.pokedex.dex.DexEntry;
@@ -22,6 +23,14 @@ public class NeededCommand {
 	public static void build(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands
                 .literal("needed")
+				.requires(sourceStack -> {
+					if (sourceStack.isPlayer()) {
+						return Permissions.INSTANCE.hasPermission(
+								sourceStack.getPlayer(),
+								Permissions.INSTANCE.getPermission("PokeDexNeeded"));
+					}
+					return true;}
+				)
                 .executes(NeededCommand::run)
         );
 	}

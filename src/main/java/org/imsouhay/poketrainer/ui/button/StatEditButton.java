@@ -5,7 +5,6 @@ import ca.landonjw.gooeylibs2.api.button.ButtonAction;
 import ca.landonjw.gooeylibs2.api.button.FlagType;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
@@ -129,7 +128,6 @@ public class StatEditButton {
                                  Operation operation ,int value, PokeBuilder builder) {
         if((builder.getEvStats().get(stat)!=builder.getEvs().getAcceptableRange().getLast()&&operation==Operation.PLUS) ||
                 (builder.getEvStats().get(stat)!=0&&operation==Operation.MINUS)) {
-            LavenderMcServerSide.LOGGER.info(builder.getEvStats().get(stat)+" ");
             builder.editV(type, stat, operation==Operation.PLUS? value:-value);
             if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
                     e.getPlayer(),
@@ -141,6 +139,7 @@ public class StatEditButton {
                     type.toString(),
                     builder.getIvStats().get(stat)
             );
+            builder.reloadButton();
             return true;
         } else {
             if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
@@ -161,8 +160,9 @@ public class StatEditButton {
                                  Operation operation ,int value, PokeBuilder builder) {
         if((builder.getIvStats().get(stat)!=builder.getIvs().getAcceptableRange().getLast()&&operation==Operation.PLUS) ||
                 (builder.getIvStats().get(stat)!=0&&operation==Operation.MINUS)) {
-            LavenderMcServerSide.LOGGER.info(builder.getEvStats().get(stat)+" ");
+
             builder.editV(type, stat, operation==Operation.PLUS? value:-value);
+
             if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
                     e.getPlayer(),
                     "statEdit",
@@ -173,6 +173,7 @@ public class StatEditButton {
                     type.toString(),
                     builder.getIvStats().get(stat)
             );
+            builder.reloadButton();
             return true;
         } else {
             if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(

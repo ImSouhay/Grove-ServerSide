@@ -42,10 +42,6 @@ public class EvEditButton {
     }
 
     private static Button buildButton(Stat stat, ItemStack displayItem, PokeBuilder builder) {
-
-
-
-
         return GooeyButton.builder()
                 .title("§a"+format(stat.getIdentifier().getPath())+" EV")
                 .lore(buildLore(stat.getIdentifier().getPath()))

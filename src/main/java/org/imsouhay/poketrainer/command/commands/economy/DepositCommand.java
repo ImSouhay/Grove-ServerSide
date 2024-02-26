@@ -8,6 +8,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import org.imsouhay.LavenderMcServerSide.config.Permissions;
 import org.imsouhay.poketrainer.account.Account;
 import org.imsouhay.poketrainer.account.AccountProvider;
 
@@ -15,6 +16,14 @@ public class DepositCommand {
     public static void build(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(Commands.literal("PokeTokensDeposit")
+                .requires(sourceStack -> {
+                    if (sourceStack.isPlayer()) {
+                        return Permissions.INSTANCE.hasPermission(
+                                sourceStack.getPlayer(),
+                                Permissions.INSTANCE.getPermission("EconomyDeposit"));
+                    }
+                    return true;}
+                )
                 .then(Commands.argument("player", StringArgumentType.word())
                         .then(Commands.argument("value", IntegerArgumentType.integer(1))
                                 .executes(DepositCommand::run))));

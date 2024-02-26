@@ -27,7 +27,7 @@ import java.util.*;
 
 public class DexMenu {
 
-	public Page getPage(UUID player, Collection<Species> speciesList) {
+	public static Page getPage(UUID player, Collection<Species> speciesList) {
 
 		ArrayList<Species> implemented = new ArrayList<>(PokemonSpecies.INSTANCE.getImplemented());
 
@@ -112,7 +112,7 @@ public class DexMenu {
 		return page;
 	}
 
-	private void setPageTitle(LinkedPage page, String string) {
+	private static void setPageTitle(LinkedPage page, String string) {
 		LinkedPage next = page.getNext();
 		if (next != null) {
 			next.setTitle(PokeDex.lang.getTitle() + string);

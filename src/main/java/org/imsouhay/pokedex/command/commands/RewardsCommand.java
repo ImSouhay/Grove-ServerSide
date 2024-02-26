@@ -7,6 +7,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import org.imsouhay.LavenderMcServerSide.config.Permissions;
 import org.imsouhay.pokedex.ui.RewardsMenu;
 
 
@@ -15,6 +16,14 @@ public class RewardsCommand {
     public static void build(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands
                 .literal("rewards")
+                .requires(sourceStack -> {
+                    if (sourceStack.isPlayer()) {
+                        return Permissions.INSTANCE.hasPermission(
+                                sourceStack.getPlayer(),
+                                Permissions.INSTANCE.getPermission("PokeDexRewards"));
+                    }
+                    return true;}
+                )
                 .executes(RewardsCommand::run)
         );
     }

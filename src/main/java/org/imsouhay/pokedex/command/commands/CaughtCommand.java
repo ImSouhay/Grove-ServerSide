@@ -10,6 +10,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import org.imsouhay.LavenderMcServerSide.config.Permissions;
 import org.imsouhay.pokedex.account.AccountProvider;
 import org.imsouhay.pokedex.dex.DexEntry;
 import org.imsouhay.pokedex.ui.DexMenu;
@@ -21,6 +22,14 @@ public class CaughtCommand {
 
         dispatcher.register(Commands
                 .literal("caught")
+				.requires(sourceStack -> {
+					if (sourceStack.isPlayer()) {
+						return Permissions.INSTANCE.hasPermission(
+								sourceStack.getPlayer(),
+								Permissions.INSTANCE.getPermission("PokeDexCaught"));
+					}
+					return true;}
+				)
                 .executes(CaughtCommand::run)
         );
 	}

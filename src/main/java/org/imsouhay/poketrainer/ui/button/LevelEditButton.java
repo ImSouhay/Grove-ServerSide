@@ -4,7 +4,6 @@ import ca.landonjw.gooeylibs2.api.button.Button;
 import ca.landonjw.gooeylibs2.api.button.ButtonAction;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import com.cobblemon.mod.common.CobblemonItems;
-import net.minecraft.network.chat.Component;
 import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
 import org.imsouhay.LavenderMcServerSide.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
@@ -65,7 +64,6 @@ public class LevelEditButton {
                 PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_level"),
                 () -> {
                         if((builder.getLevel()!=100&&operation==Operation.PLUS) || (builder.getLevel()!=1&&operation==Operation.MINUS)) {
-                            LavenderMcServerSide.LOGGER.info("lvl: "+builder.getLevel());
                             builder.editLevel(
                                     switch (operation) {
                                         case PLUS -> value;
@@ -75,6 +73,7 @@ public class LevelEditButton {
                             if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "levelEdit",
                                     String.valueOf(PokeTrainer.config.getPriceOf((operation.toChar() + "" + value + "_level"))),
                                     builder.getName(), operation.toString(), builder.getLevel());
+                            builder.reloadButton();
                             return true;
                         } else {
                             if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "levelLimitReached",

@@ -7,12 +7,21 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import org.imsouhay.LavenderMcServerSide.config.Permissions;
 import org.imsouhay.poketrainer.account.AccountProvider;
 
 public class BalanceCommand {
     public static void build(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(Commands.literal("PokeTokensBalance")
+                .requires(sourceStack -> {
+                    if (sourceStack.isPlayer()) {
+                        return Permissions.INSTANCE.hasPermission(
+                                sourceStack.getPlayer(),
+                                Permissions.INSTANCE.getPermission("EconomyBalance"));
+                    }
+                    return true;}
+                )
                 .then(Commands.argument("player", StringArgumentType.word())
                         .executes(BalanceCommand::run)));
     }
