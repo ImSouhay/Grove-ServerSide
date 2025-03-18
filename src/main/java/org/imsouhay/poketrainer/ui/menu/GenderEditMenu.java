@@ -8,10 +8,10 @@ import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import com.cobblemon.mod.common.pokemon.Gender;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 import org.imsouhay.poketrainer.builder.PokeBuilder;
-import org.imsouhay.poketrainer.economy.TransactionHandler;
+import org.imsouhay.poketrainer.economy.TransactionManager;
 import org.imsouhay.poketrainer.ui.template.DefaultChestTemplate;
 import org.imsouhay.poketrainer.util.Destination;
 
@@ -30,7 +30,7 @@ public class GenderEditMenu {
                 .title("§bMale")
                 .lore(new ArrayList<>(List.of(lore+" Male!", "", Utils.price(PokeTrainer.config.getPriceOf("toMale")))))
                 .onClick(e ->
-                        TransactionHandler.handleWithdraw(e,
+                        TransactionManager.handleWithdraw(e,
                         PokeTrainer.config.getPriceOf("toMale"),
                         () -> {
                             if(builder.getGender()!=Gender.MALE) {
@@ -49,7 +49,7 @@ public class GenderEditMenu {
                 .title("§dFemale")
                 .lore(new ArrayList<>(List.of(lore+" Female!", "", Utils.price(PokeTrainer.config.getPriceOf("toFemale")))))
                 .onClick(e ->
-                    TransactionHandler.handleWithdraw(e,
+                    TransactionManager.handleWithdraw(e,
                             PokeTrainer.config.getPriceOf("toFemale"),
                             () -> {
                                 if (builder.getGender() != Gender.FEMALE) {

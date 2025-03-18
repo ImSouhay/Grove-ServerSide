@@ -6,7 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import org.imsouhay.LavenderMcServerSide.config.Permissions;
+import org.imsouhay.Grove.config.Permissions;
 
 import java.util.ArrayList;
 import java.util.List;

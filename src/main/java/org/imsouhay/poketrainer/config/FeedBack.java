@@ -1,15 +1,14 @@
 package org.imsouhay.poketrainer.config;
 
 import com.google.gson.Gson;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static org.imsouhay.LavenderMcServerSide.LavenderMcServerSide.LOGGER;
+import static org.imsouhay.Grove.Grove.LOGGER;
 
 public class FeedBack {
 
@@ -17,6 +16,8 @@ public class FeedBack {
 
     public FeedBack() {
         feedBacks.put("BalanceNotEnough", "§cYour balance is not enough!");
+        feedBacks.put("TokensSent", "§6You have sent @value tokens to @receiver successfully");
+        feedBacks.put("TokensReceived", "§6You have received @value tokens from @sender!");
 
         feedBacks.put("toMale", "You have set your @pokemon's Gender to Male for a price of @price.");
         feedBacks.put("pokemonAlreadyMale", "§cYour @pokemon is already Male!");
@@ -36,10 +37,6 @@ public class FeedBack {
         feedBacks.put("levelEdit", "You have @operationd your @pokemon's level by @value for a price of @price.");
         feedBacks.put("levelLimitReached", "§cYour pokemon lvl is at @value! You can't @operation it anymore!");
 
-        feedBacks.put("nature", "You have set your @pokemon's nature to @nature.");
-
-        feedBacks.put("pokemonAlreadyHasNature", "§cYour @pokemon's nature is already set to @nature!");
-
         feedBacks.put("pokeball", "You have set your @pokemon's Caught Ball to @pokeball.");
         feedBacks.put("pokemonAlreadyCaughtWithBall", "§cYour @pokemon is already caught with this ball!");
 
@@ -48,6 +45,8 @@ public class FeedBack {
 
         feedBacks.put("skinEdit", "You have edited your @pokemon's texture for a price of @price.");
         feedBacks.put("pokemonAlreadyHasSkin", "§cYou can't apply a texture that you already have.");
+
+        feedBacks.put("pokeBallEventNotCurrentlyAvailable", "§cThis PokeBall is not currently available.");
     }
 
     public Map<String, String> getFeedBacks() {
@@ -64,18 +63,18 @@ public class FeedBack {
                 el -> {
                     Gson gson = Utils.newGson();
                     FeedBack feedBack = gson.fromJson(el, FeedBack.class);
-                    feedBacks = feedBack.getFeedBacks();
+                    feedBacks.putAll(feedBack.getFeedBacks());
                 });
 
         if (!futureRead.join()) {
-            LOGGER.info("No feedbacks.json file found for PokeTrainer. Attempting to generate one.");
+            LOGGER.info("No feedbacks.json file found for PokeTrainer. Attempting to generate one.");}
             Gson gson = Utils.newGson();
             String data = gson.toJson(this);
             CompletableFuture<Boolean> futureWrite = Utils.writeFileAsync(PokeTrainer.POKE_TRAINER_PATH, "feedbacks.json", data);
 
             if (!futureWrite.join()) {
                 LOGGER.fatal("Could not write feedbacks.json for PokeTrainer.");
-            }
+
             return;
         }
         LOGGER.info("PokeTrainer feedbacks file read successfully.");

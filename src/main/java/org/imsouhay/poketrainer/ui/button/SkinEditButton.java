@@ -5,14 +5,14 @@ import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import com.cobblemon.mod.common.api.pokemon.feature.ChoiceSpeciesFeatureProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 import org.imsouhay.poketrainer.builder.PokeBuilder;
-import org.imsouhay.poketrainer.economy.TransactionHandler;
+import org.imsouhay.poketrainer.economy.TransactionManager;
 
 import java.util.*;
 
-import static org.imsouhay.LavenderMcServerSide.util.Utils.format;
+import static org.imsouhay.Grove.util.Utils.format;
 
 public class SkinEditButton {
 
@@ -45,7 +45,7 @@ public class SkinEditButton {
                                 });
 
                                     if(!isChosenChoice[0]){
-                                        TransactionHandler.handleWithdraw(
+                                        TransactionManager.handleWithdraw(
                                             e,
                                             PokeTrainer.config.getPriceOf("skin"),
                                             () -> {

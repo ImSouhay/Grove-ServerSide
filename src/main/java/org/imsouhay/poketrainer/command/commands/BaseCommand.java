@@ -6,7 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import org.imsouhay.LavenderMcServerSide.config.Permissions;
+import org.imsouhay.Grove.config.Permissions;
 import org.imsouhay.poketrainer.ui.MainMenu;
 
 public class BaseCommand {

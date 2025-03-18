@@ -7,7 +7,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import org.imsouhay.LavenderMcServerSide.config.Permissions;
+import org.imsouhay.Grove.config.Permissions;
 import org.imsouhay.pokedex.ui.RewardsMenu;
 
 
@@ -36,7 +36,7 @@ public class RewardsCommand {
 		ServerPlayer player = context.getSource().getPlayer();
 
         assert player != null;
-        UIManager.openUIForcefully(player, new RewardsMenu().getPage(player.getUUID(), context.getSource()));
+        UIManager.openUIForcefully(player, RewardsMenu.getPage(player.getUUID()));
 
 		return 1;
 	}

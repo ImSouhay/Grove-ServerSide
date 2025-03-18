@@ -7,11 +7,10 @@ import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 import org.imsouhay.poketrainer.builder.PokeBuilder;
-import org.imsouhay.poketrainer.economy.TransactionHandler;
+import org.imsouhay.poketrainer.economy.TransactionManager;
 import org.imsouhay.poketrainer.util.Operation;
 import org.imsouhay.poketrainer.util.vType;
 
@@ -20,7 +19,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.imsouhay.LavenderMcServerSide.util.Utils.format;
+import static org.imsouhay.Grove.util.Utils.format;
 
 public class StatEditButton {
     
@@ -108,7 +107,7 @@ public class StatEditButton {
     }
 
     private static void handleVEdit(ButtonAction e, vType type, Stat stat, Operation operation ,int value, PokeBuilder builder) {
-        TransactionHandler.handleWithdraw(
+        TransactionManager.handleWithdraw(
                 e,
                 PokeTrainer.config.getPriceOf((operation.toChar()+""+value+"_"+type.toString())),
                 () -> {
@@ -126,6 +125,7 @@ public class StatEditButton {
 
     private static boolean handleEVEdit(ButtonAction e, vType type, Stat stat,
                                  Operation operation ,int value, PokeBuilder builder) {
+        int previousStatValue = builder.getEvStats().get(stat);
         if((builder.getEvStats().get(stat)!=builder.getEvs().getAcceptableRange().getLast()&&operation==Operation.PLUS) ||
                 (builder.getEvStats().get(stat)!=0&&operation==Operation.MINUS)) {
             builder.editV(type, stat, operation==Operation.PLUS? value:-value);
@@ -137,7 +137,7 @@ public class StatEditButton {
                     operation.toString(),
                     format(stat.getIdentifier().getPath()),
                     type.toString(),
-                    builder.getIvStats().get(stat)
+                    Math.abs(builder.getEvStats().get(stat) - previousStatValue)
             );
             builder.reloadButton();
             return true;
@@ -150,7 +150,7 @@ public class StatEditButton {
                     operation.toString(),
                     format(stat.getIdentifier().getPath()),
                     type.toString(),
-                    builder.getIvStats().get(stat)
+                    builder.getEvStats().get(stat)
             );
             return false;
         }
@@ -158,6 +158,7 @@ public class StatEditButton {
 
     private static boolean handleIVEdit(ButtonAction e, vType type, Stat stat,
                                  Operation operation ,int value, PokeBuilder builder) {
+        int previousStatValue = builder.getIvStats().get(stat);
         if((builder.getIvStats().get(stat)!=builder.getIvs().getAcceptableRange().getLast()&&operation==Operation.PLUS) ||
                 (builder.getIvStats().get(stat)!=0&&operation==Operation.MINUS)) {
 
@@ -171,7 +172,7 @@ public class StatEditButton {
                     operation.toString(),
                     format(stat.getIdentifier().getPath()),
                     type.toString(),
-                    builder.getIvStats().get(stat)
+                    Math.abs(builder.getIvStats().get(stat) - previousStatValue)
             );
             builder.reloadButton();
             return true;

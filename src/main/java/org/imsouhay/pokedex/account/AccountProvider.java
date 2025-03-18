@@ -1,8 +1,10 @@
 package org.imsouhay.pokedex.account;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
+import com.cobblemon.mod.common.pokemon.Species;
 import com.google.gson.Gson;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import static org.imsouhay.Grove.Grove.LOGGER;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.config.Reward;
 
@@ -32,29 +34,33 @@ public abstract class AccountProvider {
 
 		String[] files = dir.list();
 
-		if (files.length == 0) {
+		if (files == null || files.length == 0) {
 			return;
 		}
-
 		for (String file : files) {
 			Utils.readFileAsync(PokeDex.POKE_DEX_PATH + "accounts/", file, el -> {
 				Gson gson = Utils.newGson();
-				Account account = gson.fromJson(el, Account.class);
-				accounts.put(account.getUuid(), account);
+				try {
+					Account account = gson.fromJson(el, Account.class);
+					accounts.put(account.getUuid(), account);
+				} catch(Exception e) {
+					LOGGER.error("Something went wrong handling player dex data file: "+file
+					+"\nperhaps its not actually a data file?");
+					LOGGER.error(e.getLocalizedMessage());
+				}
 			});
 		}
 
 		int totalPokemon = PokemonSpecies.INSTANCE.getSpecies().size();
 
 		// If there are more Pokemon than in the account, add the new ones.
-		for (UUID account : accounts.keySet()) {
-			Account acc = accounts.get(account);
+		for (Account acc : accounts.values()) {
 			if (acc.getPokemonCount() < totalPokemon) {
-				ArrayList<Integer> newPokemon = new ArrayList<>();
-				for (int x=acc.getPokemonCount() + 1; x <= totalPokemon; x++) {
-					newPokemon.add(x);
+				ArrayList<String> newPokemons = new ArrayList<>();
+				for(Species specie:PokemonSpecies.INSTANCE.getSpecies()) {
+					newPokemons.add(specie.getName());
 				}
-				acc.addAllPokemon(newPokemon);
+				acc.addAllPokemon(newPokemons);
 			}
 
 			ArrayList<Double> rewardProgresses = new ArrayList<>();
@@ -66,4 +72,21 @@ public abstract class AccountProvider {
 			acc.addAllRewards(rewardProgresses);
 		}
 	}
+
+//	private static Account translateDecoyAccount(AccountDecoy decoy) {
+//		Account account = new Account(decoy.getUuid());
+//		account.setRewards(decoy.getRewards());
+//		account.setComplete(decoy.isComplete());
+//
+//		HashMap<String, DexEntry> pokemons = new HashMap<>();
+//
+//
+//		for(Species specie: PokemonSpecies.INSTANCE.getSpecies()) {
+//			pokemons.put(specie.getName(), new DexEntry(specie.getName(), decoy.isCaught(specie.getNationalPokedexNumber())));
+//		}
+//
+//		account.setPokemon(pokemons);
+//
+//		return account;
+//	}
 }

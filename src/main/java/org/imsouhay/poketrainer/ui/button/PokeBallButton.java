@@ -2,71 +2,88 @@ package org.imsouhay.poketrainer.ui.button;
 
 
 import ca.landonjw.gooeylibs2.api.button.Button;
-import ca.landonjw.gooeylibs2.api.button.FlagType;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import com.cobblemon.mod.common.api.pokeball.PokeBalls;
 import com.cobblemon.mod.common.pokeball.PokeBall;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import net.minecraft.world.item.Items;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 import org.imsouhay.poketrainer.builder.PokeBuilder;
-import org.imsouhay.poketrainer.economy.TransactionHandler;
+import org.imsouhay.poketrainer.economy.TransactionManager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-import static org.imsouhay.LavenderMcServerSide.util.Utils.format;
+import static org.imsouhay.Grove.util.Utils.format;
 
 public class PokeBallButton {
-    private static List<Button> buttons;
+    private static final String[] colors={"§c", "§f", "§d", "§b", "§8", "§4", "§7", "§e", "§a", "§2", "§3"};
+    private static final Random random = new Random();
 
     public static List<Button> getButtons(PokeBuilder builder) {
-        makeButtons(builder);
-        return buttons;
+        return makeButtons(builder);
     }
 
-    private static void makeButtons(PokeBuilder builder) {
-        PokeBalls balls=PokeBalls.INSTANCE;
-        
-        Button filler=GooeyButton.builder()
-                .title("")
-                .hideFlags(FlagType.All)
-                .lore(new ArrayList<>())
-                .display(Utils.parseItemId(PokeTrainer.lang.getFillerMaterial()))
-                .build();
-        
-        buttons = new LinkedList<>(Arrays.asList(
-                buildButton(balls.getAZURE_BALL(), "§c", builder),
-                buildButton(balls.getBEAST_BALL(), "§f", builder),
-                buildButton(balls.getCHERISH_BALL(), "§d", builder),
-                buildButton(balls.getDIVE_BALL(), "§b", builder),
-                buildButton(balls.getDREAM_BALL(), "§f", builder),
-                buildButton(balls.getDUSK_BALL(), "§8", builder),
-                buildButton(balls.getFRIEND_BALL(), "§b", builder),
-                buildButton(balls.getGREAT_BALL(), "§4", builder),
-                buildButton(balls.getHEAL_BALL(), "§c", builder),
-                buildButton(balls.getHEAVY_BALL(), "§7", builder),
-                buildButton(balls.getLEVEL_BALL(), "§e", builder),
-                buildButton(balls.getLOVE_BALL(), "§d", builder),
-                buildButton(balls.getLURE_BALL(), "§f", builder),
-                buildButton(balls.getLUXURY_BALL(), "§6", builder),
-                buildButton(balls.getMASTER_BALL(), "§0", builder),
-                buildButton(balls.getMOON_BALL(), "§7", builder),
-                buildButton(balls.getNEST_BALL(), "§e", builder),
-                buildButton(balls.getNET_BALL(), "§f", builder),
-                buildButton(balls.getPARK_BALL(), "§a", builder),
-                buildButton(balls.getPOKE_BALL(), "§c", builder),
-                buildButton(balls.getPREMIER_BALL(), "§5", builder),
-                buildButton(balls.getQUICK_BALL(), "§7", builder),
-                buildButton(balls.getREPEAT_BALL(), "§8", builder),
-                buildButton(balls.getSAFARI_BALL(), "§2", builder),
-                buildButton(balls.getSPORT_BALL(), "§3", builder),
-                buildButton(balls.getTIMER_BALL(), "§f", builder),
-                buildButton(balls.getULTRA_BALL(), "§4", builder),
-                buildButton(balls.getSLATE_BALL(), "§7", builder)
-        ));
+    private static List<Button> makeButtons(PokeBuilder builder) {
+        List<Button> buttons = new ArrayList<>();
+        int counter = 0;
+
+        for(PokeBall pokeBall:PokeBalls.INSTANCE.all()) {
+            if(!PokeTrainer.config.isBlocked(pokeBall) && !PokeTrainer.config.hasEvent(pokeBall)) {
+                buttons.add(buildButton(pokeBall, colors[counter], builder));
+                counter++;
+                if(counter>=11) counter=0;
+                continue;
+            }
+
+            ArrayList<String> lore=buildLore(pokeBall.getName().getPath());
+            lore.add(0, PokeTrainer.lang.getActiveEventBallLore());
+
+            int eventCode=PokeTrainer.config.isEventActive(pokeBall);
+            if(eventCode == -1) {
+                continue;
+            }
+            
+            boolean eventActive=(eventCode==1);
+
+            buttons.add(GooeyButton.builder()
+                    .title((eventActive ? colors[random.nextInt(11)]:"§c")+format(pokeBall.getName().getPath()))
+                    .display(eventActive ? new ItemStack(pokeBall.item().asItem()):new ItemStack(Items.BARRIER))
+                    .lore(eventActive ? lore:List.of(PokeTrainer.lang.getInactiveEventBallLore()))
+                    .onClick(e ->{
+                        if(eventCode==0) {
+                            e.getPlayer().sendSystemMessage(Component.nullToEmpty(PokeTrainer.fBack.get("pokeBallEventNotCurrentlyAvailable")));
+                            return;
+                        }
+
+
+                        TransactionManager.handleWithdraw(
+                                e,
+                                PokeTrainer.config.getPriceOf(pokeBall.getName().getPath()),
+                                () -> {
+                                    if(builder.getCaughtBall()!=pokeBall) {
+                                        builder.setCaughtBall(pokeBall);
+                                        if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(
+                                                e.getPlayer(),
+                                                "pokeball",
+                                                String.valueOf(PokeTrainer.config.getPriceOf(pokeBall.getName().getPath())),
+                                                builder.getName(),
+                                                format(pokeBall.getName().getPath()));
+                                        builder.reloadButton();
+                                        return true;
+                                    }
+                                    if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(),
+                                            "pokemonAlreadyCaughtWithBall",
+                                            String.valueOf(PokeTrainer.config.getPriceOf(pokeBall.getName().getPath())),
+                                            builder.getName(),
+                                            format(pokeBall.getName().getPath()));
+                                    return false;
+                                }
+                        );})
+                    .build());
+        }
+        return buttons;
     }
 
 
@@ -76,7 +93,7 @@ public class PokeBallButton {
                 .display(new ItemStack(ball.item().asItem()))
                 .lore(buildLore(ball.getName().getPath()))
                 .onClick(e ->
-                        TransactionHandler.handleWithdraw(
+                        TransactionManager.handleWithdraw(
                                 e,
                                 PokeTrainer.config.getPriceOf(ball.getName().getPath()),
                                 () -> {

@@ -2,7 +2,7 @@ package org.imsouhay.pokehunt;
 
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.Logger;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
+import org.imsouhay.Grove.Grove;
 import org.imsouhay.pokehunt.command.basecommand.HuntCommand;
 import org.imsouhay.pokehunt.config.Config;
 import org.imsouhay.pokehunt.config.Lang;
@@ -16,9 +16,9 @@ import org.imsouhay.pokehunt.util.CommandsRegistry;
 public class PokeHunt
 {
 	public static final String MOD_ID = "hunt";
-	public static final String POKEHUNT_PATH=LavenderMcServerSide.BASE_PATH+"pokehunt/";
+	public static final String POKEHUNT_PATH= Grove.BASE_PATH+"pokehunt/";
 
-	public static final Logger LOGGER = LavenderMcServerSide.LOGGER;
+	public static final Logger LOGGER = Grove.LOGGER;
 	public static Config config = new Config();
 	public static SpawnRates spawnRates = new SpawnRates();
 	public static CurrentHunts hunts = new CurrentHunts(null);
@@ -40,6 +40,7 @@ public class PokeHunt
 		config.init();
 		spawnRates.init();
 		if (!config.isIndividualHunts()) {
+			hunts.clearCounter();
 			hunts.init();
 		}
 		language.init();

@@ -2,27 +2,36 @@ package org.imsouhay.poketrainer.config;
 
 
 import com.cobblemon.mod.common.api.pokeball.PokeBalls;
+import com.cobblemon.mod.common.pokeball.PokeBall;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.google.gson.Gson;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-import static org.imsouhay.LavenderMcServerSide.LavenderMcServerSide.LOGGER;
+import static org.imsouhay.Grove.Grove.LOGGER;
 
 public class Config {
 
     public boolean feedbackEnabled;
     public int defaultBalance;
-    public Map<String, Integer> prices=new LinkedHashMap<>();
+    public Map<String, Integer> prices;
+    public List<String> blackListedPokeBalls;
+    public Map<String, Boolean> pokeBallEvents;
+    private HashMap<String, ArrayList<String>> pokemonsBlackList;
+    private HashMap<String, Integer> sectionsPosition;
+
 
     public Config() {
         defaultBalance=0;
         feedbackEnabled=true;
+        blackListedPokeBalls = new ArrayList<>();
+        pokeBallEvents = new HashMap<>();
+        sectionsPosition = new HashMap<>();
+        prices = new LinkedHashMap<>();
 
-        prices.put("nature", 400);
         prices.put("toMale", 200);
         prices.put("toFemale", 200);
         prices.put("shiny", 400);
@@ -79,38 +88,30 @@ public class Config {
         prices.put("-10_IV", 10);
         prices.put("-15_IV", 15);
         prices.put("-31_IV", 17);
-        
 
-        PokeBalls balls=PokeBalls.INSTANCE;
+        sectionsPosition.put("ability", 11);
+        sectionsPosition.put("gender", 15);
+        sectionsPosition.put("iv", 21);
+        sectionsPosition.put("ev", 23);
+        sectionsPosition.put("pokeball", 29);
+        sectionsPosition.put("level", 33);
+        sectionsPosition.put("shiny", 39);
+        sectionsPosition.put("skin", 41);
 
-        prices.put(balls.getAZURE_BALL().getName().getPath(), 200);
-        prices.put(balls.getBEAST_BALL().getName().getPath(), 200);
-        prices.put(balls.getCHERISH_BALL().getName().getPath(), 200);
-        prices.put(balls.getDIVE_BALL().getName().getPath(), 200);
-        prices.put(balls.getDREAM_BALL().getName().getPath(), 200);
-        prices.put(balls.getDUSK_BALL().getName().getPath(), 200);
-        prices.put(balls.getFRIEND_BALL().getName().getPath(), 200);
-        prices.put(balls.getGREAT_BALL().getName().getPath(), 200);
-        prices.put(balls.getHEAL_BALL().getName().getPath(), 200);
-        prices.put(balls.getHEAVY_BALL().getName().getPath(), 200);
-        prices.put(balls.getLEVEL_BALL().getName().getPath(), 200);
-        prices.put(balls.getLOVE_BALL().getName().getPath(), 200);
-        prices.put(balls.getLURE_BALL().getName().getPath(), 200);
-        prices.put(balls.getLUXURY_BALL().getName().getPath(), 200);
-        prices.put(balls.getMASTER_BALL().getName().getPath(), 200);
-        prices.put(balls.getMOON_BALL().getName().getPath(), 200);
-        prices.put(balls.getNEST_BALL().getName().getPath(), 200);
-        prices.put(balls.getNET_BALL().getName().getPath(), 200);
-        prices.put(balls.getPARK_BALL().getName().getPath(), 200);
-        prices.put(balls.getPOKE_BALL().getName().getPath(), 200);
-        prices.put(balls.getPREMIER_BALL().getName().getPath(), 200);
-        prices.put(balls.getQUICK_BALL().getName().getPath(), 200);
-        prices.put(balls.getREPEAT_BALL().getName().getPath(), 200);
-        prices.put(balls.getSAFARI_BALL().getName().getPath(), 200);
-        prices.put(balls.getSPORT_BALL().getName().getPath(), 200);
-        prices.put(balls.getTIMER_BALL().getName().getPath(), 200);
-        prices.put(balls.getULTRA_BALL().getName().getPath(), 200);
-        prices.put(balls.getSLATE_BALL().getName().getPath(), 200);
+
+        for(PokeBall ball:PokeBalls.INSTANCE.all()) {
+            prices.put(ball.getName().getPath(), 200);
+        }
+
+        pokemonsBlackList = new HashMap<>();
+        pokemonsBlackList.put("ability", new ArrayList<>());
+        pokemonsBlackList.put("gender", new ArrayList<>());
+        pokemonsBlackList.put("iv", new ArrayList<>());
+        pokemonsBlackList.put("ev", new ArrayList<>());
+        pokemonsBlackList.put("pokeball", new ArrayList<>());
+        pokemonsBlackList.put("level", new ArrayList<>());
+        pokemonsBlackList.put("shiny", new ArrayList<>());
+        pokemonsBlackList.put("skin", new ArrayList<>());
     }
 
     public Map<String, Integer> getPrices() {
@@ -129,26 +130,84 @@ public class Config {
         return feedbackEnabled;
     }
 
+
+    public HashMap<String, ArrayList<String>> getPokemonsBlackList() {
+        return pokemonsBlackList;
+    }
+
+    public boolean isPokemonBlackListed(Pokemon pokemon, String section) {
+        for (String name : pokemonsBlackList.get(section)) {
+            if (name.equalsIgnoreCase(pokemon.getDisplayName().getString().trim())
+                    || name.equalsIgnoreCase(pokemon.getSpecies().getName().trim())) return true;
+        }
+        return false;
+    }
+
+    public List<String> getBlackListedPokeBalls() {
+        return blackListedPokeBalls;
+    }
+
+    public boolean isBlocked(PokeBall pokeBall) {
+        return blackListedPokeBalls.contains(pokeBall.getName().getPath());
+    }
+
+    public Map<String, Boolean> getPokeBallEvents() {
+        return pokeBallEvents;
+    }
+
+    public boolean hasEvent(PokeBall pokeBall) {
+        return pokeBallEvents.containsKey(pokeBall.getName().getPath());
+    }
+
+    /* binary boolean type
+     * 1 -> true
+     * 0 -> false
+     * -1 -> null
+     */
+    public int isEventActive(PokeBall pokeBall) {
+        try {
+            return pokeBallEvents.get(pokeBall.getName().getPath())? 1:0;
+        } catch(NullPointerException e) {
+            return -1;
+        }
+    }
+
+    public HashMap<String, Integer> getSectionsPosition() {
+        return sectionsPosition;
+    }
+
+    public int getSectionPos(String section) {
+        try {
+            return sectionsPosition.get(section);
+        } catch(Exception e) {
+            LOGGER.error(section+" section position can't be found in the poketrainer config file");
+            return 0;
+        }
+    }
+
     public void init() {
         CompletableFuture<Boolean> futureRead = Utils.readFileAsync(PokeTrainer.POKE_TRAINER_PATH, "config.json",
                 el -> {
                     Gson gson = Utils.newGson();
                     Config config = gson.fromJson(el, Config.class);
-                    prices=config.getPrices();
+                    prices.putAll(config.getPrices());
+                    pokemonsBlackList.putAll(config.getPokemonsBlackList());
                     defaultBalance=config.getDefaultBalance();
                     feedbackEnabled=config.isFeedbackEnabled();
+                    blackListedPokeBalls =config.getBlackListedPokeBalls();
+                    pokeBallEvents=config.getPokeBallEvents();
+                    sectionsPosition=config.getSectionsPosition();
         });
 
         if (!futureRead.join()) {
             LOGGER.info("No config.json file found for PokeTrainer. Attempting to " +
-                    "generate one.");
+                    "generate one.");}
             Gson gson = Utils.newGson();
             String data = gson.toJson(this);
             CompletableFuture<Boolean> futureWrite = Utils.writeFileAsync(PokeTrainer.POKE_TRAINER_PATH, "config.json", data);
 
             if (!futureWrite.join()) {
                 LOGGER.fatal("Could not write config.json for PokeTrainer.");
-            }
             return;
         }
         LOGGER.info("PokeTrainer config file read successfully.");

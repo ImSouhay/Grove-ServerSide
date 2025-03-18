@@ -1,8 +1,6 @@
 package org.imsouhay.pokedex.command.commands;
 
 import ca.landonjw.gooeylibs2.api.UIManager;
-import com.cobblemon.mod.common.Cobblemon;
-import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -10,9 +8,12 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import org.imsouhay.LavenderMcServerSide.config.Permissions;
+import org.imsouhay.Grove.config.Permissions;
+import org.imsouhay.pokedex.PokeDex;
+import org.imsouhay.pokedex.account.Account;
 import org.imsouhay.pokedex.account.AccountProvider;
-import org.imsouhay.pokedex.dex.DexEntry;
+import org.imsouhay.pokedex.collection.ImplementedMonsCollection;
+import org.imsouhay.pokedex.collection.MonsCollection;
 import org.imsouhay.pokedex.ui.DexMenu;
 
 import java.util.ArrayList;
@@ -41,15 +42,18 @@ public class CaughtCommand {
         }
 
 		ServerPlayer player = context.getSource().getPlayer();
+		Account playerAccount = AccountProvider.getAccount(player.getUUID());
 
-		ArrayList<DexEntry> caught = AccountProvider.getAccount(player.getUUID()).getCaught();
 
-		ArrayList<Species> species = new ArrayList<>();
-		for (DexEntry entry : caught) {
-			species.add(PokemonSpecies.INSTANCE.getByPokedexNumber(entry.getDexNumber(), Cobblemon.MODID));
+		ArrayList<Species> caught = new ArrayList<>();
+		for(Species specie: PokeDex.config.isImplementedOnly()?
+				ImplementedMonsCollection.getList(): MonsCollection.getList()) {
+			if(playerAccount.getPokemon(specie.getName()).isCaught()) {
+				caught.add(specie);
+			}
 		}
 
-		UIManager.openUIForcefully(player, new DexMenu().getPage(player.getUUID(), species));
+		UIManager.openUIForcefully(player, DexMenu.getPage(player.getUUID(), caught));
 
 		return 1;
 	}

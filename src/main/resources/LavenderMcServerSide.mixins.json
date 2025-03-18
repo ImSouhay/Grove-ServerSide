@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "org.imsouhay.LavenderMcServerSide.ui.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "lavendermc.refmap.json",
+  "mixins": [
+    "ServerPlayerEntityMixin",
+    "ServerPlayNetworkHandlerMixin",
+    "SignBlockEntityAccessor"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8.4"
+}
+
+

@@ -2,8 +2,8 @@ package org.imsouhay.poketrainer.account;
 
 import com.google.gson.Gson;
 import net.minecraft.world.entity.player.Player;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.Grove;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 
 import java.io.File;
@@ -35,14 +35,14 @@ public class AccountProvider {
     public static void init() {
         accounts = new HashMap<>();
 
-        File dir = Utils.checkForDirectory(LavenderMcServerSide.BASE_PATH + "economy/balances/");
+        File dir = Utils.checkForDirectory(Grove.BASE_PATH + "economy/balances/");
 
         String[] files = dir.list();
 
         if(files==null) return;
 
         for (String file : files) {
-            Utils.readFileAsync(LavenderMcServerSide.BASE_PATH + "economy/balances/", file, el -> {
+            Utils.readFileAsync(Grove.BASE_PATH + "economy/balances/", file, el -> {
                 Gson gson = Utils.newGson();
                 Account account = gson.fromJson(el, Account.class);
                 accounts.put(account.getUUID(), account);

@@ -7,9 +7,8 @@ import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import ca.landonjw.gooeylibs2.api.page.GooeyPage;
 import ca.landonjw.gooeylibs2.api.page.Page;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.account.Account;
 import org.imsouhay.pokedex.account.AccountProvider;
@@ -23,7 +22,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class RewardsMenu {
-	public Page getPage(UUID player, CommandSourceStack sourceStack) {
+	public static Page getPage(UUID player) {
 		Account account = AccountProvider.getAccount(player);
 		double progress = Utils.getDexProgress(account);
 

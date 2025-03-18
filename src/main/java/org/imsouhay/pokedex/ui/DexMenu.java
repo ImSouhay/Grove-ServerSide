@@ -10,16 +10,15 @@ import ca.landonjw.gooeylibs2.api.helpers.PaginationHelper;
 import ca.landonjw.gooeylibs2.api.page.LinkedPage;
 import ca.landonjw.gooeylibs2.api.page.Page;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
-import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.item.PokemonItem;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.account.AccountProvider;
+import org.imsouhay.pokedex.collection.ImplementedMonsCollection;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,46 +26,34 @@ import java.util.*;
 
 public class DexMenu {
 
-	public static Page getPage(UUID player, Collection<Species> speciesList) {
+	public static Page getPage(UUID player, List<Species> speciesList) {
 
-		ArrayList<Species> implemented = new ArrayList<>(PokemonSpecies.INSTANCE.getImplemented());
+		List<Species> implemented = ImplementedMonsCollection.getList();
+
+		ArrayList<Button> buttons = new ArrayList<>();
 
 
-
-		Comparator<Species> comparator = Comparator.comparingInt(Species::getNationalPokedexNumber);
-
-		List<Species> orderedList= new ArrayList<>(speciesList);
-
-		orderedList.sort(comparator);
-
-		ArrayList<Button> sortedButtons = new ArrayList<>();
-		int counter=0;
-		// For each species, make a button.
-		for (Species dexSpecies : orderedList) {
-			if(PokeDex.config.isDexLimitEnabled() && counter> PokeDex.config.getDexLimit()) {
+		for (Species dexSpecies : speciesList) {
+			if(PokeDex.config.isDexLimitEnabled() && dexSpecies.getNationalPokedexNumber() > PokeDex.config.getDexLimit()) {
 				break;
 			}
-			counter++;
+			if(dexSpecies==null) continue;
 
-			// Creates the button
 			Pokemon mon = new Pokemon();
 			mon.setSpecies(dexSpecies);
 			Collection<String> lore = new ArrayList<>();
-			boolean isCaught;
-			try {
-				isCaught =
-						AccountProvider.getAccount(player).getPokemon(dexSpecies.getNationalPokedexNumber()).isCaught();
-			} catch (NullPointerException e) {
-				continue;
-			}
-			if (!implemented.contains(dexSpecies)) {
-				lore.add("§4Not Implemented Currently.");
-			} else {
+			boolean isCaught = AccountProvider.getAccount(player).getPokemon(dexSpecies.getName()).isCaught();
+			
+			if(PokeDex.config.isImplementedOnly()) {
 				lore.add(isCaught ? "§aCaught" : "§cNot Caught");
+			} else if (!implemented.contains(dexSpecies)) {
+					lore.add("§4Not Implemented Currently.");
+				} else {
+					lore.add(isCaught ? "§aCaught" : "§cNot Caught");
 			}
 
 			// Adds button to hashmap.
-			sortedButtons.add(GooeyButton.builder()
+			buttons.add(GooeyButton.builder()
 					.display(PokemonItem.from(mon))
 					.title("§8" + dexSpecies.getNationalPokedexNumber() + ": §3" + dexSpecies.getName())
 					.lore(lore)
@@ -101,8 +88,9 @@ public class DexMenu {
 				.set(45, previousPage)
 				.set(53, nextPage)
 				.build();
+		if(PokeDex.config.isDexSearchEnabled()) template.set(49, SearchButton.getButton(player));
 
-		LinkedPage page = PaginationHelper.createPagesFromPlaceholders(template, sortedButtons, null);
+		LinkedPage page = PaginationHelper.createPagesFromPlaceholders(template, buttons, null);
 		String text = " - " +
                 BigDecimal.valueOf(Utils.getDexProgress(AccountProvider.getAccount(player)))
 						.setScale(2, RoundingMode.HALF_EVEN).floatValue() + "%";

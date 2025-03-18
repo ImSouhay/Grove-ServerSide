@@ -1,12 +1,12 @@
 package org.imsouhay.poketrainer.config;
 
 import com.google.gson.Gson;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 
 import java.util.concurrent.CompletableFuture;
 
-import static org.imsouhay.LavenderMcServerSide.LavenderMcServerSide.LOGGER;
+import static org.imsouhay.Grove.Grove.LOGGER;
 
 public class Lang {
     private String fillerMaterial;
@@ -14,6 +14,8 @@ public class Lang {
     private String homeMenuFillerMaterial;
     private String mainMenuTitle;
     private String homeMenuTitle;
+    private String inactiveEventBallLore;
+    private String activeEventBallLore;
 
     public Lang() {
         fillerMaterial="minecraft:orange_stained_glass_pane";
@@ -21,6 +23,8 @@ public class Lang {
         homeMenuFillerMaterial="minecraft:orange_stained_glass_pane";
         mainMenuTitle="PokeTrainer";
         homeMenuTitle="PokeTrainer - Home";
+        inactiveEventBallLore ="§7This PokeBall is not Currently Available.";
+        activeEventBallLore = "§5Special Limited-Time Event PokeBall.";
     }
 
     public String getFillerMaterial() {return  fillerMaterial;}
@@ -32,6 +36,14 @@ public class Lang {
 
     public String getHomeMenuFillerMaterial() {
         return homeMenuFillerMaterial;
+    }
+
+    public String getInactiveEventBallLore() {
+        return inactiveEventBallLore;
+    }
+
+    public String getActiveEventBallLore() {
+        return activeEventBallLore;
     }
 
     /**
@@ -47,18 +59,20 @@ public class Lang {
                     fillerMaterial = lang.getFillerMaterial();
                     mainMenuFillerMaterial= lang.getMainMenuFillerMaterial();
                     homeMenuFillerMaterial= lang.getHomeMenuFillerMaterial();
+                    inactiveEventBallLore = lang.getInactiveEventBallLore();
+                    activeEventBallLore = lang.getActiveEventBallLore();
                 });
 
         if (!futureRead.join()) {
             LOGGER.info("No lang.json file found for PokeTrainer. Attempting to " +
-                    "generate one.");
+                    "generate one.");}
             Gson gson = Utils.newGson();
             String data = gson.toJson(this);
             CompletableFuture<Boolean> futureWrite = Utils.writeFileAsync(PokeTrainer.POKE_TRAINER_PATH, "lang.json", data);
 
             if (!futureWrite.join()) {
                 LOGGER.fatal("Could not write lang.json for PokeTrainer.");
-            }
+
             return;
         }
         LOGGER.info("PokeTrainer lang file read successfully.");

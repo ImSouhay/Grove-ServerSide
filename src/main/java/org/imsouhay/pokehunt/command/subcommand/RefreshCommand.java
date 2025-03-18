@@ -7,7 +7,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import org.imsouhay.LavenderMcServerSide.config.Permissions;
+import org.imsouhay.Grove.config.Permissions;
 import org.imsouhay.pokehunt.PokeHunt;
 import org.imsouhay.pokehunt.hunts.CurrentHunts;
 import org.imsouhay.pokehunt.util.Subcommand;
@@ -89,13 +89,12 @@ public class RefreshCommand extends Subcommand {
 
 			CurrentHunts playerHunts = PokeHunt.manager.getPlayerHunts(player.getUUID());
 
-			PokeHunt.manager.addPlayer(player.getUUID()); // Adds the player if they dont exist.
-
 			Set<UUID> huntIds = new HashSet<>(playerHunts.getHunts().keySet()); // Gets the players current hunt ids.
 
 			for (UUID hunt : huntIds) {
 				playerHunts.removeHunt(hunt, false); // Removes all of the players hunts.
 			}
+			playerHunts.clearCounter();
 
 			playerHunts.init(); // Initializes the player again.
 

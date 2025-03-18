@@ -74,16 +74,17 @@ public class Lang {
 				});
 
 		if (!futureRead.join()) {
-			PokeHunt.LOGGER.info("No lang.json file found for PokeHunt. Attempting to generate one.");
-			Gson gson = Utils.newGson();
+			PokeHunt.LOGGER.info("No lang.json file found for PokeHunt. Attempting to generate one.");}
+
+		Gson gson = Utils.newGson();
 			String data = gson.toJson(this);
 			CompletableFuture<Boolean> futureWrite = Utils.writeFileAsync(PokeHunt.POKEHUNT_PATH, "lang.json",
 					data);
 
 			if (!futureWrite.join()) {
 				PokeHunt.LOGGER.fatal("Could not write lang.json file for PokeHunt.");
-			}
-			PokeHunt.LOGGER.info("PokeHunt lang file read successfully.");
+			return;
 		}
+			PokeHunt.LOGGER.info("PokeHunt lang file read successfully.");
 	}
 }

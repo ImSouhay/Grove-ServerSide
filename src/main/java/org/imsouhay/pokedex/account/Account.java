@@ -3,23 +3,21 @@ package org.imsouhay.pokedex.account;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.google.gson.Gson;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.Grove;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.pokedex.PokeDex;
 import org.imsouhay.pokedex.config.Reward;
 import org.imsouhay.pokedex.dex.DexEntry;
 import org.imsouhay.pokedex.dex.RewardProgress;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class Account {
+
 	private final UUID uuid;
 	private HashMap<Double, RewardProgress> rewards;
-	private HashMap<Integer, DexEntry> pokemon;
+	private HashMap<String, DexEntry> pokemon;
 	private boolean isComplete;
 
 	public Account(UUID uuid) {
@@ -28,8 +26,8 @@ public class Account {
 
 		pokemon = new HashMap<>();
 		for (Species species : PokemonSpecies.INSTANCE.getSpecies()) {
-			pokemon.put(species.getNationalPokedexNumber(),
-					new DexEntry(species.getNationalPokedexNumber(), false));
+			pokemon.put(species.getName(),
+					new DexEntry(species.getName(), false));
 		}
 
 		rewards = new HashMap<>();
@@ -65,23 +63,39 @@ public class Account {
 		writeToFile();
 	}
 
-	public DexEntry getPokemon(int dexNumber) {
-		return pokemon.get(dexNumber);
-	}
-
-	public void setCaught(int dexNumber, boolean isCaught) {
-		pokemon.put(dexNumber, new DexEntry(dexNumber, isCaught));
+	public void setRewards(HashMap<Double, RewardProgress> rewards) {
+		this.rewards = rewards;
 		writeToFile();
 	}
 
-	public void addPokemon(int dexNumber) {
-		pokemon.put(dexNumber, new DexEntry(dexNumber, false));
+	public Collection<DexEntry> getAllPokemons() {
+		return pokemon.values();
+	}
+
+
+	public DexEntry getPokemon(String pokeName) {
+		if(!pokemon.containsKey(pokeName)) {
+			addPokemon(pokeName);
+		}
+
+		return pokemon.get(pokeName);
+	}
+
+	public void setCaught(String pokeName, boolean isCaught) {
+		pokemon.put(pokeName, new DexEntry(pokeName, isCaught));
 		writeToFile();
 	}
 
-	public void addAllPokemon(List<Integer> dexNumbers) {
-		for (int number : dexNumbers) {
-			pokemon.put(number, new DexEntry(number, false));
+	public void addPokemon(String pokeName) {
+		pokemon.put(pokeName, new DexEntry(pokeName, false));
+		writeToFile();
+	}
+
+	public void addAllPokemon(List<String> pokeNames) {
+		for (String pokeName : pokeNames) {
+			if(!pokemon.containsKey(pokeName)) {
+				pokemon.put(pokeName, new DexEntry(pokeName, false));
+			}
 		}
 		writeToFile();
 	}
@@ -106,6 +120,11 @@ public class Account {
 		return needed;
 	}
 
+	public void setPokemon(HashMap<String, DexEntry> pokemon) {
+		this.pokemon = pokemon;
+		writeToFile();
+	}
+
 	public UUID getUuid() {
 		return uuid;
 	}
@@ -123,7 +142,7 @@ public class Account {
 		return pokemon.size();
 	}
 
-	private void writeToFile() {
+	public void writeToFile() {
 		AccountProvider.updateAccount(this);
 		Gson gson = Utils.newGson();
 
@@ -131,7 +150,7 @@ public class Account {
 				uuid + ".json", gson.toJson(this));
 
 		if (!future.join()) {
-			LavenderMcServerSide.LOGGER.error("Unable to write account for " + uuid);
+			Grove.LOGGER.error("Unable to write account for " + uuid);
 		}
 	}
 }

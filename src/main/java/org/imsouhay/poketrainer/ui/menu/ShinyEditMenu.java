@@ -7,10 +7,10 @@ import ca.landonjw.gooeylibs2.api.page.Page;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 import org.imsouhay.poketrainer.builder.PokeBuilder;
-import org.imsouhay.poketrainer.economy.TransactionHandler;
+import org.imsouhay.poketrainer.economy.TransactionManager;
 import org.imsouhay.poketrainer.ui.template.DefaultChestTemplate;
 import org.imsouhay.poketrainer.util.Destination;
 
@@ -28,7 +28,7 @@ public class ShinyEditMenu {
                 .display(new ItemStack(Items.GRAY_DYE))
                 .title("§7§lNon-Shiny")
                 .lore(new ArrayList<>(List.of(lore+" Non-Shiny!", "", Utils.price(PokeTrainer.config.getPriceOf("unShiny")))))
-                .onClick(e -> TransactionHandler.handleWithdraw(
+                .onClick(e -> TransactionManager.handleWithdraw(
                         e,
                         PokeTrainer.config.getPriceOf("unShiny"),
                         () -> {
@@ -49,7 +49,7 @@ public class ShinyEditMenu {
                 .title("§e§lShiny")
                 .lore(new ArrayList<>(List.of(lore+" §eShiny§7!", "", Utils.price(PokeTrainer.config.getPriceOf("shiny")))))
                 .onClick(e ->
-                    TransactionHandler.handleWithdraw(
+                    TransactionManager.handleWithdraw(
                             e,
                             PokeTrainer.config.getPriceOf("shiny"),
                             () -> {

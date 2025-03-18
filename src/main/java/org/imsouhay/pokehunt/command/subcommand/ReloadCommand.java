@@ -5,7 +5,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import org.imsouhay.LavenderMcServerSide.config.Permissions;
+import org.imsouhay.Grove.config.Permissions;
 import org.imsouhay.pokehunt.PokeHunt;
 import org.imsouhay.pokehunt.util.Subcommand;
 import org.imsouhay.pokehunt.util.Utils;

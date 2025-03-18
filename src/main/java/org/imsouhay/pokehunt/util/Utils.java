@@ -293,8 +293,7 @@ public abstract class Utils {
 
 		if (PokeHunt.config.isIndividualHunts()) {
 			for (UUID player : PokeHunt.manager.getPlayers()) {
-				ArrayList<SingleHunt> copy =
-						(ArrayList<SingleHunt>) new ArrayList<>(PokeHunt.manager.getPlayerHunts(player).getHunts().values()).clone();
+				ArrayList<SingleHunt> copy = new ArrayList<>(PokeHunt.manager.getPlayerHunts(player).getHunts().values());
 				for (SingleHunt hunt : copy) {
 					if (hunt != null) {
 						hunt.getTimer().cancel();
@@ -302,7 +301,7 @@ public abstract class Utils {
 				}
 			}
 		} else {
-			ArrayList<SingleHunt> copy = (ArrayList<SingleHunt>) new ArrayList<>(PokeHunt.hunts.getHunts().values()).clone();
+			ArrayList<SingleHunt> copy = new ArrayList<>(PokeHunt.hunts.getHunts().values());
 			for (SingleHunt hunt : copy) {
 				if (hunt != null) {
 					hunt.getTimer().cancel();
@@ -327,20 +326,19 @@ public abstract class Utils {
 	}
 
 	public static String getStringRarityFromPokemon(Pokemon pokemon) {
-		float rarity=PokeHunt.spawnRates.getRarity(pokemon);
+		String rarity=PokeHunt.spawnRates.getRarity(pokemon);
 
 		return getStringRarity(rarity);
 	}
 
-	public static String getStringRarity(float rarity) {
-		if (rarity >= PokeHunt.config.getRarity().getCommonPokemonRarity()) {
-			return "Common";
-		} else if (rarity >= PokeHunt.config.getRarity().getUncommonPokemonRarity()) {
-			return "Uncommon";
-		} else if (rarity >= PokeHunt.config.getRarity().getRarePokemonRarity()) {
-			return "Rare";
-		}
-		return "UltraRare";
+	public static String getStringRarity(String rarity) {
+		if(rarity==null) return null;
+		return switch (rarity) {
+			case "common" -> "Common";
+			case "uncommon" -> "Uncommon";
+			case "rare" -> "Rare";
+			default -> "UltraRare";
+		};
 	}
 
 }

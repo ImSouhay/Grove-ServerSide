@@ -6,6 +6,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import org.imsouhay.poketrainer.command.commands.BaseCommand;
 import org.imsouhay.poketrainer.command.commands.economy.BalanceCommand;
 import org.imsouhay.poketrainer.command.commands.economy.DepositCommand;
+import org.imsouhay.poketrainer.command.commands.economy.TransferCommand;
 import org.imsouhay.poketrainer.command.commands.economy.WithdrawCommand;
 
 public class PokeTrainerCommandHandler {
@@ -17,5 +18,6 @@ public class PokeTrainerCommandHandler {
         BalanceCommand.build(dispatcher);
         DepositCommand.build(dispatcher);
         WithdrawCommand.build(dispatcher);
+        TransferCommand.build(dispatcher);
     }
 }

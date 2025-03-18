@@ -11,7 +11,7 @@ import com.cobblemon.mod.common.CobblemonItems;
 import com.cobblemon.mod.common.api.pokemon.feature.ChoiceSpeciesFeatureProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 import org.imsouhay.poketrainer.builder.PokeBuilder;
 import org.imsouhay.poketrainer.ui.menu.*;
@@ -23,18 +23,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.imsouhay.LavenderMcServerSide.util.Utils.format;
+import static org.imsouhay.Grove.util.Utils.format;
 
 public class OptionsMenu {
     public static Page getPage(PokeBuilder builder){
-        Button natureButton= GooeyButton.builder()
-                .display(CobblemonItems.LEAF_STONE.getDefaultInstance())
-                .title("§aNature §eEdit")
-                .onClick(e -> {
-                    UIManager.openUIForcefully(e.getPlayer(), NatureEditMenu.getPage(builder));
-                })
-                .lore(new ArrayList<>(List.of(getLore("nature"))))
-                .build();
         
         Button abilityButton= GooeyButton.builder()
                 .display(CobblemonItems.PRISM_SCALE.getDefaultInstance())
@@ -122,25 +114,32 @@ public class OptionsMenu {
                     .build();
         }
         
-        
+        Button blacklisted = GooeyButton.builder()
+                .title("§cSection Unavailable")
+                .display(new ItemStack(Items.BARRIER))
+                .lore(new ArrayList<>(List.of("§7This Section is closed for this pokemon.")))
+                .build();
 
 
         ChestTemplate.Builder chestTemplate= DefaultChestTemplate.getDefaultTemplate(builder, Destination.MAIN, PokeTrainer.lang.getHomeMenuFillerMaterial());
-        
-        chestTemplate.set(10, natureButton);
-        chestTemplate.set(12, abilityButton);
-        chestTemplate.set(14, genderButton);
-        chestTemplate.set(16, pokeballButton);
-        chestTemplate.set(20, IvButton);
-        chestTemplate.set(22, EvButton);
-        chestTemplate.set(24, LevelButton);
-        chestTemplate.set(30, ShinyButton);
-        chestTemplate.set(32, skinButton);
+
+        chestTemplate.set(PokeTrainer.config.getSectionPos("ability"), isBlackListed("ability", builder)? blacklisted:abilityButton);
+        chestTemplate.set(PokeTrainer.config.getSectionPos("gender"), isBlackListed("gender", builder)? blacklisted:genderButton);
+        chestTemplate.set(PokeTrainer.config.getSectionPos("iv"), isBlackListed("iv", builder)? blacklisted:IvButton);
+        chestTemplate.set(PokeTrainer.config.getSectionPos("ev"), isBlackListed("ev", builder)? blacklisted:EvButton);
+        chestTemplate.set(PokeTrainer.config.getSectionPos("pokeball"), isBlackListed("pokeball", builder)? blacklisted:pokeballButton);
+        chestTemplate.set(PokeTrainer.config.getSectionPos("level"), isBlackListed("level", builder)? blacklisted:LevelButton);
+        chestTemplate.set(PokeTrainer.config.getSectionPos("shiny"), isBlackListed("shiny", builder)? blacklisted:ShinyButton);
+        chestTemplate.set(PokeTrainer.config.getSectionPos("skin"), isBlackListed("skin", builder)? blacklisted:skinButton);
 
        return GooeyPage.builder()
                .title(PokeTrainer.lang.getHomeMenuTitle())
                .template(chestTemplate.build())
                .build();
+    }
+
+    private static boolean isBlackListed(String section, PokeBuilder builder) {
+        return PokeTrainer.config.isPokemonBlackListed(builder.getPokemon(), section);
     }
     
     private static String getLore(String destination){

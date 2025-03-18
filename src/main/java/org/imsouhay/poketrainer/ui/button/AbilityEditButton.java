@@ -4,16 +4,16 @@ import ca.landonjw.gooeylibs2.api.button.Button;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import com.cobblemon.mod.common.CobblemonItems;
 import com.cobblemon.mod.common.api.abilities.Ability;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 import org.imsouhay.poketrainer.builder.PokeBuilder;
-import org.imsouhay.poketrainer.economy.TransactionHandler;
+import org.imsouhay.poketrainer.economy.TransactionManager;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.imsouhay.LavenderMcServerSide.util.Utils.format;
+import static org.imsouhay.Grove.util.Utils.format;
 
 public class AbilityEditButton {
 
@@ -43,7 +43,7 @@ public class AbilityEditButton {
                             List.of("§aClick to apply "+ability.getName()+" ability!",
                                     "",
                                     Utils.price(PokeTrainer.config.getPriceOf("ability")))))
-                .onClick(e -> TransactionHandler.handleWithdraw(
+                .onClick(e -> TransactionManager.handleWithdraw(
                             e,
                             PokeTrainer.config.getPriceOf("ability"),
                             () -> {

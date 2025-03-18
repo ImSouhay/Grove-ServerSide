@@ -15,7 +15,7 @@ import org.imsouhay.poketrainer.util.vType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.imsouhay.LavenderMcServerSide.util.Utils.format;
+import static org.imsouhay.Grove.util.Utils.format;
 
 public class PokeBuilder {
 
@@ -224,7 +224,7 @@ public class PokeBuilder {
 
     public void setAbility(Ability ability) {
         this.ability = ability;
-        this.pokemon.setAbility(this.ability);
+        this.pokemon.updateAbility(this.ability);
         
     }
 

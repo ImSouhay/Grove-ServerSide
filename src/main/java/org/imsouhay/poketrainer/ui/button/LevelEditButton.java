@@ -4,11 +4,10 @@ import ca.landonjw.gooeylibs2.api.button.Button;
 import ca.landonjw.gooeylibs2.api.button.ButtonAction;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import com.cobblemon.mod.common.CobblemonItems;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.util.Utils;
 import org.imsouhay.poketrainer.PokeTrainer;
 import org.imsouhay.poketrainer.builder.PokeBuilder;
-import org.imsouhay.poketrainer.economy.TransactionHandler;
+import org.imsouhay.poketrainer.economy.TransactionManager;
 import org.imsouhay.poketrainer.util.Operation;
 
 import java.util.ArrayList;
@@ -59,7 +58,8 @@ public class LevelEditButton {
     }
 
     private static void handleLevelEdit(ButtonAction e, Operation operation, int value, PokeBuilder builder) {
-        TransactionHandler.handleWithdraw(
+        int previousLevel = builder.getLevel();
+        TransactionManager.handleWithdraw(
                 e,
                 PokeTrainer.config.getPriceOf(operation.toChar()+""+value+"_level"),
                 () -> {
@@ -72,7 +72,7 @@ public class LevelEditButton {
                             );
                             if(PokeTrainer.config.isFeedbackEnabled()) Utils.sendFeedBack(e.getPlayer(), "levelEdit",
                                     String.valueOf(PokeTrainer.config.getPriceOf((operation.toChar() + "" + value + "_level"))),
-                                    builder.getName(), operation.toString(), builder.getLevel());
+                                    builder.getName(), operation.toString(), Math.abs(builder.getLevel() - previousLevel));
                             builder.reloadButton();
                             return true;
                         } else {

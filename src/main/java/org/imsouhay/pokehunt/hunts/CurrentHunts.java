@@ -4,17 +4,19 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import org.imsouhay.LavenderMcServerSide.config.Permissions;
+import org.imsouhay.Grove.Grove;
 import org.imsouhay.pokehunt.PokeHunt;
 import org.imsouhay.pokehunt.util.Utils;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 public class CurrentHunts {
 	private final UUID owner; // The owner of the current hunts.
 	private final HashMap<UUID, SingleHunt> hunts; // List of current hunts.
 	private final HashMap<UUID, Species> species; // List of species.
+	private final HashMap<String, Integer> huntsCounter;
 
 	/**
 	 * Constructor that generates a bunch of hunts when the server starts.
@@ -23,6 +25,7 @@ public class CurrentHunts {
 		this.owner = owner;
 		hunts = new HashMap<>();
 		species = new HashMap<>();
+		huntsCounter = new HashMap<>();
 	}
 
 	/**
@@ -47,45 +50,36 @@ public class CurrentHunts {
 		return hunts.get(uuid);
 	}
 
-	/**
-	 * Adds a new hunt to the current hunts.
-	 * @return true if successful.
-	 */
 	public SingleHunt addHunt() {
 		// If the maximum hunt amount is reached, don't add another.
 		if (hunts.size() < PokeHunt.config.getHuntAmount()) {
-			SingleHunt hunt = new SingleHunt(owner);
+			SingleHunt hunt = new SingleHunt(owner, this);
 
-			// If a species matches, add hunt again.
-			if (species.containsValue(hunt.getPokemon().getSpecies()) ||
-			PokeHunt.config.blacklistContains(hunt.getPokemon().getSpecies().getName())) {
-				return addHunt();
-			}
+			huntsCounter.put(
+					hunt.getRarity(),
+					huntsCounter.getOrDefault(hunt.getRarity(), 0)+1);
 
 			// If the config setting is enabled, send the broadcast.
-
-			if (PokeHunt.config.isIndividualHunts()) {
-				ServerPlayer player = owner == null ? null : PokeHunt.server.getPlayerList().getPlayer(owner);
-				if (owner != null &&
-						player != null &&
-				Permissions.INSTANCE.hasPermission(player,
-						Permissions.INSTANCE.getPermission("HuntNotify"))) {
-					PokeHunt.server.getPlayerList().getPlayer(owner).sendSystemMessage(
-							Component.literal(
-									Utils.formatPlaceholders(
-											PokeHunt.language.getNewHuntMessage(), null, hunt.getPokemon()
-									)
-							)
-					);
-				}
-
-			} else {
-				if (PokeHunt.config.isSendHuntBeginMessage()) {
+			if(PokeHunt.config.isSendHuntBeginMessage()) {
+				if (PokeHunt.config.isIndividualHunts()) {
+					ServerPlayer player = owner == null ? null : PokeHunt.server.getPlayerList().getPlayer(owner);
+					if (owner != null &&
+							player != null) {
+						Objects.requireNonNull(PokeHunt.server.getPlayerList().getPlayer(owner)).sendSystemMessage(
+								Component.literal(
+										Utils.formatPlaceholders(
+												PokeHunt.language.getNewHuntMessage(), null, hunt.getPokemon()
+										)
+								)
+						);
+					}
+				} else {
 					Utils.broadcastMessage(Utils.formatPlaceholders(
 							PokeHunt.language.getNewHuntMessage(), null, hunt.getPokemon()
 					));
 				}
 			}
+
 
 			species.put(hunt.getId(), hunt.getPokemon().getSpecies());
 
@@ -95,11 +89,6 @@ public class CurrentHunts {
 		return null;
 	}
 
-	/**
-	 * Removes a hunt from the list.
-	 * @param id the ID of the hunt to remove.
-	 * @return true if successfully removed.
-	 */
 	public SingleHunt removeHunt(UUID id, boolean broadcast) {
 		SingleHunt removedHunt = hunts.remove(id);
 		if (removedHunt != null) {
@@ -108,11 +97,9 @@ public class CurrentHunts {
 
 			// If broadcasts are enabled and the method call wants it broadcast, send it.
 			if (PokeHunt.config.isIndividualHunts()) {
-				if (owner != null &&
-						PokeHunt.server.getPlayerList().getPlayer(owner) != null &&
-						Permissions.INSTANCE.hasPermission(PokeHunt.server.getPlayerList().getPlayer(owner),
-								Permissions.INSTANCE.getPermission("HuntNotify"))) {
-					PokeHunt.server.getPlayerList().getPlayer(owner).sendSystemMessage(
+				if (owner != null && PokeHunt.server.getPlayerList().getPlayer(owner)!=null && !removedHunt.ended() &&
+						PokeHunt.config.isSendHuntEndMessage()) {
+					Objects.requireNonNull(PokeHunt.server.getPlayerList().getPlayer(owner)).sendSystemMessage(
 							Component.literal(
 									Utils.formatPlaceholders(
 											PokeHunt.language.getEndedHuntMessage(), null, removedHunt.getPokemon()
@@ -120,15 +107,26 @@ public class CurrentHunts {
 							)
 					);
 				}
-			} else {
-				if (PokeHunt.config.isSendHuntEndMessage() && broadcast) {
+			} else if (PokeHunt.config.isSendHuntEndMessage() && broadcast && !removedHunt.ended()) {
 					Utils.broadcastMessage(Utils.formatPlaceholders(
 							PokeHunt.language.getEndedHuntMessage(), null, removedHunt.getPokemon()
 					));
-				}
 			}
 
 		}
+
+		try {
+			huntsCounter.put(removedHunt.getRarity(), Math.max(huntsCounter.get(removedHunt.getRarity()) - 1, 0));
+		} catch(Exception e) {
+			Grove.LOGGER.fatal("SOMETHING WENT WRONG DEALING WITH STUFF AFTER PLAYER CAUGHT A WANTED POKEMON FOR HUNT");
+			Grove.LOGGER.fatal(e.getMessage());
+			Grove.LOGGER.fatal(e.getLocalizedMessage());
+			Grove.LOGGER.fatal(removedHunt==null? removedHunt.getRarity():"eh no rarity found cause the hunt is null"+ "<-Pokemon hunt rarity - -> the hunts counter:");
+			for(String str:huntsCounter.keySet()) {
+				Grove.LOGGER.fatal(str+" - "+huntsCounter.get(str));
+			}
+		}
+
 		return removedHunt;
 	}
 
@@ -139,6 +137,7 @@ public class CurrentHunts {
 	 */
 	public ReplacedHunt replaceHunt(UUID id, boolean broadcast) {
 		SingleHunt oldHunt = removeHunt(id, broadcast);
+
 
 		if (oldHunt != null) {
 			return new ReplacedHunt(oldHunt, addHunt());
@@ -160,12 +159,20 @@ public class CurrentHunts {
 		return null;
 	}
 
+	public boolean speciesListContains(Species specie) {
+		return this.species.containsValue(specie);
+	}
 
-	/**
-	 * Gets all of the hunts.
-	 * @return
-	 */
 	public HashMap<UUID, SingleHunt> getHunts() {
 		return hunts;
 	}
+
+
+	public int getRarityCounter(String strRarity) {
+		return huntsCounter.getOrDefault(strRarity, 0);
+	}
+
+    public void clearCounter() {
+        huntsCounter.clear();
+    }
 }

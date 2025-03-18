@@ -8,7 +8,6 @@ import com.cobblemon.mod.common.CobblemonItems;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.imsouhay.poketrainer.builder.PokeBuilder;
 import org.imsouhay.poketrainer.util.Destination;
 import org.imsouhay.poketrainer.util.Operation;
@@ -20,7 +19,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.imsouhay.LavenderMcServerSide.util.Utils.format;
+import static org.imsouhay.Grove.util.Utils.format;
 
 public class IvEditButton {
     private static List<Button> buttons;

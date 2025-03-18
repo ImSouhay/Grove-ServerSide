@@ -1,11 +1,13 @@
 package org.imsouhay.pokehunt.config;
 
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.google.gson.Gson;
 import org.imsouhay.pokehunt.PokeHunt;
 import org.imsouhay.pokehunt.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -15,19 +17,24 @@ public class Config {
 	private boolean individualHunts; // if hunts should be individual for each player.
 	private boolean sendHuntEndMessage; // Should the mod send a message when a hunt ends.
 	private boolean sendHuntBeginMessage; // Should the mod send a message when a hunt begins.
-	private HashMap<String, Integer> huntDurations; // How long each hunt should last, in minutes.
+	private boolean startNewHuntOnCatch; // Should a new hunt start just after a previous one has ended
+	private boolean coolDownEnabled;
+	private final HashMap<String, Integer> huntDurations; // How long each hunt should last, in minutes.
 	private int huntAmount; // How many hunts should there be at once.
-	private RarityConfig rarity; // The rarity borders.
 	private RewardsConfig rewards; // The rewards for the hunts.
 	private Properties matchProperties; // What properties should be checked to complete the hunt.
 	private ArrayList<CustomReward> customRewards; // List of custom prices.
 	private ArrayList<String> blacklist; // List if Pokemon that shouldn't be added to PokeHunt.
-	private HashMap<String, ArrayList<String>> defaultLore;
+	private final HashMap<String, ArrayList<String>> defaultLore;
+	private final HashMap<String, Integer> coolDownDurations;
+	private final HashMap<String, Integer> legalHuntCounter;
 
 	public Config() {
 		individualHunts = false;
 		sendHuntEndMessage = true;
 		sendHuntBeginMessage = true;
+		coolDownEnabled = true;
+		startNewHuntOnCatch = false;
 
 		huntDurations= new HashMap<>();
 
@@ -41,9 +48,21 @@ public class Config {
 		defaultLore.put("Uncommon", new ArrayList<>());
 		defaultLore.put("Rare", new ArrayList<>());
 		defaultLore.put("UltraRare", new ArrayList<>());
+		defaultLore.put("onCooldown", new ArrayList<>(List.of("§7This hunt is on cooldown.")));
+		
+		coolDownDurations = new HashMap<>();
+		coolDownDurations.put("Common", 5);
+		coolDownDurations.put("Uncommon", 10);
+		coolDownDurations.put("Rare", 25);
+		coolDownDurations.put("UltraRare", 35);
+
+		legalHuntCounter = new HashMap<>();
+		legalHuntCounter.put("Common", 3);
+		legalHuntCounter.put("Uncommon", 2);
+		legalHuntCounter.put("Rare", 1);
+		legalHuntCounter.put("UltraRare", 1);
 
 		huntAmount = 7;
-		rarity = new RarityConfig();
 		rewards = new RewardsConfig();
 		matchProperties = new Properties();
 		customRewards = new ArrayList<>();
@@ -57,10 +76,9 @@ public class Config {
 	public void init() {
 		CompletableFuture<Boolean> futureRead = Utils.readFileAsync(PokeHunt.POKEHUNT_PATH, "config.json",
 				el -> {
-					PokeHunt.LOGGER.error(PokeHunt.POKEHUNT_PATH);
 					Gson gson = Utils.newGson();
 					Config cfg = gson.fromJson(el, Config.class);
-					huntDurations = cfg.getHuntDurations();
+					huntDurations.putAll(cfg.getHuntDurations());
 
 					if (cfg.getHuntAmount() > 28) {
 						huntAmount = 28;
@@ -70,18 +88,28 @@ public class Config {
 					}
 					individualHunts = cfg.isIndividualHunts();
 					sendHuntEndMessage = cfg.isSendHuntEndMessage();
+					coolDownEnabled = cfg.isCoolDownEnabled();
 					sendHuntBeginMessage = cfg.isSendHuntBeginMessage();
 					matchProperties = cfg.getMatchProperties();
 					customRewards = cfg.getCustomPrices();
 					blacklist = cfg.getBlacklist();
-					rarity = cfg.getRarity();
 					rewards = cfg.getRewards();
-					defaultLore= cfg.getDefaultLore();
+					defaultLore.putAll(cfg.getDefaultLore());
+					startNewHuntOnCatch= cfg.isStartNewHuntOnCatch();
+					coolDownDurations.putAll(cfg.getCoolDownDurations());
+					legalHuntCounter.putAll(cfg.getLegalHuntCounter());
+					if(legalHuntCounter.values().stream().mapToInt(Integer::intValue).sum() > huntAmount) {
+						PokeHunt.LOGGER.error("Legal hunts can't be higher than the hunt amount");
+						legalHuntCounter.put("Common", huntAmount - 4);
+						legalHuntCounter.put("Uncommon", 2);
+						legalHuntCounter.put("Rare", 1);
+						legalHuntCounter.put("UltraRare", 1);
+					}
 				});
 
 		// If the config couldn't be read, write a new one.
 		if (!futureRead.join()) {
-			PokeHunt.LOGGER.info("No config.json file found for PokeHunt. Attempting to generate one.");
+			PokeHunt.LOGGER.info("No config.json file found for PokeHunt. Attempting to generate one.");}
 			Gson gson = Utils.newGson();
 			String data = gson.toJson(this);
 			CompletableFuture<Boolean> futureWrite = Utils.writeFileAsync(PokeHunt.POKEHUNT_PATH, "config.json",
@@ -90,7 +118,7 @@ public class Config {
 			// If the write failed, log fatal.
 			if (!futureWrite.join()) {
 				PokeHunt.LOGGER.fatal("Could not write config for PokeHunt.");
-			}
+
 			return;
 		}
 		PokeHunt.LOGGER.info("PokeHunt config file read successfully.");
@@ -118,6 +146,17 @@ public class Config {
 		return matchProperties;
 	}
 
+	public boolean isCoolDownEnabled() {
+		return coolDownEnabled;
+	}
+	public Integer getCoolDown(String rarity) {
+		return coolDownDurations.get(rarity);
+	}
+
+	public HashMap<String, Integer> getCoolDownDurations() {
+		return coolDownDurations;
+	}
+
 	public ArrayList<CustomReward> getCustomPrices() {
 		return customRewards;
 	}
@@ -134,19 +173,34 @@ public class Config {
 		return blacklist;
 	}
 
-	public RarityConfig getRarity() {
-		return rarity;
-	}
-
 	public RewardsConfig getRewards() {
 		return rewards;
 	}
 
-	public boolean blacklistContains(String pokemon) {
+	public HashMap<String, Integer> getLegalHuntCounter() {
+		return legalHuntCounter;
+	}
+
+	public int getLegalRarityCounter(String strRarity) {return legalHuntCounter.get(strRarity);}
+
+
+	public boolean blacklistContains(Pokemon pokemon) {
 		for (String name : blacklist) {
-			if (name.equalsIgnoreCase(pokemon)) return true;
+			if (name.equalsIgnoreCase(pokemon.getDisplayName().getString().trim())
+			    || name.equalsIgnoreCase(pokemon.getSpecies().getName().trim())) return true;
 		}
 		return false;
+	}
+
+	public boolean blacklistContains(String pokemon) {
+		for (String name : blacklist) {
+			if (name.equalsIgnoreCase(pokemon.trim())) return true;
+		}
+		return false;
+	}
+
+	public boolean isStartNewHuntOnCatch() {
+		return startNewHuntOnCatch;
 	}
 
 	public HashMap<String, ArrayList<String>> getDefaultLore() {

@@ -13,6 +13,7 @@ import org.imsouhay.pokehunt.hunts.ReplacedHunt;
 import org.imsouhay.pokehunt.hunts.SingleHunt;
 import org.imsouhay.pokehunt.util.Utils;
 
+import java.util.TimerTask;
 import java.util.UUID;
 
 public abstract class EventHandler {
@@ -43,6 +44,10 @@ public abstract class EventHandler {
 					hunt = PokeHunt.hunts.getHunt(matchedUUID);
 				}
 
+				if(hunt.isDone()) {
+					return Unit.INSTANCE;
+				}
+
 
 				if (!PokeHunt.config.isIndividualHunts()) {
 					Utils.broadcastMessage(Utils.formatPlaceholders(
@@ -68,21 +73,37 @@ public abstract class EventHandler {
 					} catch (NullPointerException ex) {
 						// If any errors occur, send log to console.
 						PokeHunt.LOGGER.error("Could not process hunt " + matchedUUID + " for " + player.getName().getString());
-						// Just in case playerlist is empty for some random reason.
+						// Just in case player list is empty for some random reason.
 						ex.printStackTrace();
 					}
 				}
-				ReplacedHunt replacedHunt;
-				if (PokeHunt.config.isIndividualHunts()) {
-					replacedHunt = PokeHunt.manager.getPlayerHunts(player.getUUID())
-							.replaceHunt(matchedUUID, false);
+				if(PokeHunt.config.isCoolDownEnabled()) {
+					hunt.end();
+					hunt.getTimer().schedule(new TimerTask() {
+						@Override
+						public void run() {
+							hunt.startNewHunt();
+						}
+					}, PokeHunt.config.getCoolDown(hunt.getRarity())*60*1000);
+					hunt.setCaught();
+					hunt.addToEndTime(PokeHunt.config.getCoolDown(hunt.getRarity())*60*1000);
+					HuntEvents.COMPLETED.trigger(new CompletedEvent(hunt, player.getUUID()));
+				} else if(PokeHunt.config.isStartNewHuntOnCatch()) {
+					ReplacedHunt replacedHunt;
+					if (PokeHunt.config.isIndividualHunts()) {
+						replacedHunt = PokeHunt.manager.getPlayerHunts(player.getUUID())
+								.replaceHunt(matchedUUID, false);
+					} else {
+						replacedHunt = PokeHunt.hunts.replaceHunt(matchedUUID, false);
+					}
+
+					if (replacedHunt != null) {
+						HuntEvents.COMPLETED.trigger(new CompletedEvent(replacedHunt.getOldHunt(), player.getUUID()));
+					}
 				} else {
-					replacedHunt = PokeHunt.hunts.replaceHunt(matchedUUID, false);
+					hunt.setCaught();
 				}
 
-				if (replacedHunt != null) {
-					HuntEvents.COMPLETED.trigger(new CompletedEvent(replacedHunt.getOldHunt(), player.getUUID()));
-				}
 				return Unit.INSTANCE;
 			}
 			return Unit.INSTANCE;

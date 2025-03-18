@@ -1,20 +1,18 @@
 package org.imsouhay.poketrainer.builder;
 
-import ca.landonjw.gooeylibs2.api.button.Button;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.moves.MoveSet;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.item.PokemonItem;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.imsouhay.LavenderMcServerSide.util.Utils.format;
+import static org.imsouhay.Grove.util.Utils.format;
 
 public class PokeBuilderButton {
 
@@ -34,7 +32,7 @@ public class PokeBuilderButton {
                 "§7Nature: §e"+format(builder.getNature().getName().getPath()),
                 "§7Gender: §e"+builder.getGenderName(),
                 "§7Friendship: §e"+builder.getFriendShip(),
-                "§7Hidden Power: §e"+format(builder.getPokemon().getTeraType().getName()),
+                "§7Hidden Power: §e"+format(builder.getPokemon().getTeraType().getDisplayName().getString()),
                 "§7Caught Ball: §e"+format(builder.getCaughtBall().getName().getPath()),
                 "§7IVs: §e"+builder.getIVsTotal()+"§7/§e"+builder.getMaxIVs(),
                 buildStatsLine(builder.getIvStats()),

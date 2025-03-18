@@ -13,16 +13,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.imsouhay.pokehunt.PokeHunt;
 import org.imsouhay.pokehunt.hunts.SingleHunt;
 import org.imsouhay.pokehunt.util.Utils;
 
-import static org.imsouhay.LavenderMcServerSide.util.StyleUtils.*;
+import static org.imsouhay.Grove.util.StyleUtils.*;
 import static org.imsouhay.pokehunt.util.Utils.parseLongDate;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PokeHuntMenu {
 
@@ -32,6 +32,22 @@ public class PokeHuntMenu {
                 PokeHunt.config.isIndividualHunts() ?
                         PokeHunt.manager.getPlayerHunts(uuid).getHunts().values() :
                         PokeHunt.hunts.getHunts().values()) {
+
+            if(hunt.isDone()) {
+                ArrayList<String> onCooldownLore= new ArrayList<>(
+                        PokeHunt.config.getDefaultLore().get("onCooldown")
+                );
+
+                onCooldownLore.add("§7Available in: §c"+parseLongDate(hunt.getEndTime() - new Date().getTime()));
+
+
+                hunts.add(GooeyButton.builder()
+                        .title("§cOn Cooldown")
+                        .display(new ItemStack(Items.BARRIER))
+                        .lore(onCooldownLore)
+                        .build());
+                continue;
+            }
 
             ArrayList<String> defaultLore = new ArrayList<>(
                     PokeHunt.config.getDefaultLore().get(Utils.getStringRarityFromPokemon(hunt.getPokemon()))
@@ -73,7 +89,7 @@ public class PokeHuntMenu {
                                 .setStyle(Style.EMPTY.withColor(TextColor.parseColor("light_purple")))));
             }
 
-            lore.add(Component.literal(PokeHunt.language.getTimeRemaining() + parseLongDate(hunt.getEndtime() - new Date().getTime())));
+            lore.add(Component.literal(PokeHunt.language.getTimeRemaining() + parseLongDate(hunt.getEndTime() - new Date().getTime())));
 
             GooeyButton button = GooeyButton.builder()
                     .display(PokemonItem.from(hunt.getPokemon(), 1))

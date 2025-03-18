@@ -12,7 +12,7 @@ import org.imsouhay.poketrainer.util.Destination;
 import org.imsouhay.poketrainer.util.Operation;
 import org.imsouhay.poketrainer.util.vType;
 
-import static org.imsouhay.LavenderMcServerSide.util.Utils.format;
+import static org.imsouhay.Grove.util.Utils.format;
 
 public class StatEditMenu {
 

@@ -1,7 +1,5 @@
 package org.imsouhay.pokehunt.api.event;
 
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
-
 import java.util.function.Consumer;
 
 /**

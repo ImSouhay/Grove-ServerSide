@@ -10,7 +10,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import org.imsouhay.LavenderMcServerSide.config.Permissions;
+import org.imsouhay.Grove.config.Permissions;
 import org.imsouhay.pokehunt.PokeHunt;
 import org.imsouhay.pokehunt.hunts.SingleHunt;
 import org.imsouhay.pokehunt.util.Subcommand;

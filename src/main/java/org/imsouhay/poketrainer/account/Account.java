@@ -1,8 +1,8 @@
 package org.imsouhay.poketrainer.account;
 
 import com.google.gson.Gson;
-import org.imsouhay.LavenderMcServerSide.LavenderMcServerSide;
-import org.imsouhay.LavenderMcServerSide.util.Utils;
+import org.imsouhay.Grove.Grove;
+import org.imsouhay.Grove.util.Utils;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -43,11 +43,11 @@ public class Account {
         AccountProvider.updateAccount(this);
         Gson gson = Utils.newGson();
 
-        CompletableFuture<Boolean> future = Utils.writeFileAsync(LavenderMcServerSide.BASE_PATH+"economy/balances/",
+        CompletableFuture<Boolean> future = Utils.writeFileAsync(Grove.BASE_PATH+"economy/balances/",
                 uuid + ".json", gson.toJson(this));
 
         if (!future.join()) {
-            LavenderMcServerSide.LOGGER.error("Unable to write account for " + uuid);
+            Grove.LOGGER.error("Unable to write account for " + uuid);
         }
     }
 }

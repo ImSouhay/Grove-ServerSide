@@ -1,16 +1,16 @@
 package org.imsouhay.pokedex.dex;
 
 public class DexEntry {
-	private int dexNumber;
-	private boolean isCaught;
+	private final String pokeName;
+	private final boolean isCaught;
 
-	public DexEntry(int number, boolean caught) {
-		dexNumber = number;
+	public DexEntry(String name, boolean caught) {
+		pokeName = name;
 		isCaught = caught;
 	}
 
-	public int getDexNumber() {
-		return dexNumber;
+	public String getPokeName() {
+		return pokeName;
 	}
 
 	public boolean isCaught() {
