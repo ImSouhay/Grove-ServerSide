@@ -1,6 +1,10 @@
-LavenderMC-ServerSide
+Grove-ServerSide
 =====================
-### A server-side Forge Mod made for Lavender-MC, adds a **PokeDex** and a **PokeTrainer**.
+### A server-side Forge Mod made for Grove-MC, adds a **PokeDex** and a **PokeTrainer** and a **PokeHunt**.
+
+This is not the full documentation. This mod is no longer being updated, and I am no longer affiliated with The Grove.
+
+You are free to use this mod on your server and modify parts of it to better fit your needs. Just don't claim full ownership, and if possible, give me a mention—I love seeing my work in action! 😄
 
 <p align="center">
   <a href="https://modrinth.com/mod/gooeylibs" target="_blank">
